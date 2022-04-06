@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/CinemachineTools.unity
-    guid: 2fb0860acce82c94ca6367cfd85989be
+    path: Assets/Scenes/TestMoveMap.unity
+    guid: 65fd191d44a7f7d41bd5cf231e0a2aff
   m_configObjects: {}

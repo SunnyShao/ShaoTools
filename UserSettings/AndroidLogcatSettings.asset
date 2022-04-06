@@ -1,0 +1,143 @@
+{
+    "m_SelectedDeviceId": "c29c62f2",
+    "m_SelectedPackage": {
+        "deviceId": "c29c62f2",
+        "name": "com.ShaoTools.ShaoTools",
+        "processId": 25247,
+        "exited": false
+    },
+    "m_SelectedPriority": 0,
+    "m_KnownPackagesForSerialization": [
+        {
+            "deviceId": "77f9ca14",
+            "name": "com.ShaoTools.ShaoTools",
+            "processId": 28340,
+            "exited": true
+        },
+        {
+            "deviceId": "77f9ca14",
+            "name": "com.ShaoTools.ShaoTools",
+            "processId": 31089,
+            "exited": true
+        },
+        {
+            "deviceId": "77f9ca14",
+            "name": "com.ShaoTools.ShaoTools",
+            "processId": 4966,
+            "exited": true
+        },
+        {
+            "deviceId": "77f9ca14",
+            "name": "com.ShaoTools.ShaoTools",
+            "processId": 6086,
+            "exited": true
+        },
+        {
+            "deviceId": "77f9ca14",
+            "name": "com.ShaoTools.ShaoTools",
+            "processId": 8614,
+            "exited": true
+        },
+        {
+            "deviceId": "77f9ca14",
+            "name": "com.gyyx.zoids",
+            "processId": 31352,
+            "exited": false
+        },
+        {
+            "deviceId": "c29c62f2",
+            "name": "com.miui.home",
+            "processId": 2253,
+            "exited": false
+        },
+        {
+            "deviceId": "c29c62f2",
+            "name": "com.miui.packageinstaller",
+            "processId": 20255,
+            "exited": true
+        },
+        {
+            "deviceId": "c29c62f2",
+            "name": "com.gyyx.zoids",
+            "processId": 20451,
+            "exited": true
+        },
+        {
+            "deviceId": "c29c62f2",
+            "name": "com.gyyx.zoids",
+            "processId": 21844,
+            "exited": true
+        },
+        {
+            "deviceId": "c29c62f2",
+            "name": "com.miui.packageinstaller",
+            "processId": 21651,
+            "exited": true
+        },
+        {
+            "deviceId": "c29c62f2",
+            "name": "com.gyyx.zoids",
+            "processId": 23175,
+            "exited": true
+        },
+        {
+            "deviceId": "c29c62f2",
+            "name": "com.ShaoTools.ShaoTools",
+            "processId": 25247,
+            "exited": false
+        }
+    ],
+    "m_Tags": {
+        "m_Entries": [
+            {
+                "m_Name": "Filter by all listed tags",
+                "m_Selected": false
+            },
+            {
+                "m_Name": "No Filter",
+                "m_Selected": true
+            },
+            {
+                "m_Name": "",
+                "m_Selected": false
+            },
+            {
+                "m_Name": "Tag Control...",
+                "m_Selected": false
+            },
+            {
+                "m_Name": "",
+                "m_Selected": false
+            },
+            {
+                "m_Name": "Unity",
+                "m_Selected": false
+            },
+            {
+                "m_Name": "CRASH",
+                "m_Selected": false
+            }
+        ]
+    },
+    "m_MemoryViewerState": {
+        "MemoryWindowHeight": 300.0,
+        "MemoryWindowWidth": 170.0,
+        "MemoryTypeEnabled": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+        ],
+        "MemoryGroup": 2,
+        "Behavior": 0
+    },
+    "m_Filter": "",
+    "m_FilterIsRegularExpression": false,
+    "m_SymbolPaths": []
+}
