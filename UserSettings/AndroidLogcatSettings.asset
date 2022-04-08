@@ -2,24 +2,12 @@
     "m_SelectedDeviceId": "c29c62f2",
     "m_SelectedPackage": {
         "deviceId": "c29c62f2",
-        "name": "com.ShaoTools.ShaoTools",
-        "processId": 25247,
+        "name": "com.gyyx.zoids",
+        "processId": 18465,
         "exited": false
     },
     "m_SelectedPriority": 0,
     "m_KnownPackagesForSerialization": [
-        {
-            "deviceId": "77f9ca14",
-            "name": "com.ShaoTools.ShaoTools",
-            "processId": 28340,
-            "exited": true
-        },
-        {
-            "deviceId": "77f9ca14",
-            "name": "com.ShaoTools.ShaoTools",
-            "processId": 31089,
-            "exited": true
-        },
         {
             "deviceId": "77f9ca14",
             "name": "com.ShaoTools.ShaoTools",
@@ -42,6 +30,24 @@
             "deviceId": "77f9ca14",
             "name": "com.gyyx.zoids",
             "processId": 31352,
+            "exited": true
+        },
+        {
+            "deviceId": "77f9ca14",
+            "name": "com.miui.packageinstaller",
+            "processId": 14270,
+            "exited": false
+        },
+        {
+            "deviceId": "77f9ca14",
+            "name": "com.gyyx.zoids",
+            "processId": 14711,
+            "exited": true
+        },
+        {
+            "deviceId": "77f9ca14",
+            "name": "com.gyyx.zoids",
+            "processId": 17448,
             "exited": false
         },
         {
@@ -52,38 +58,80 @@
         },
         {
             "deviceId": "c29c62f2",
-            "name": "com.miui.packageinstaller",
-            "processId": 20255,
+            "name": "com.android.fileexplorer",
+            "processId": 11649,
             "exited": true
         },
         {
             "deviceId": "c29c62f2",
             "name": "com.gyyx.zoids",
-            "processId": 20451,
-            "exited": true
-        },
-        {
-            "deviceId": "c29c62f2",
-            "name": "com.gyyx.zoids",
-            "processId": 21844,
+            "processId": 13528,
             "exited": true
         },
         {
             "deviceId": "c29c62f2",
             "name": "com.miui.packageinstaller",
-            "processId": 21651,
+            "processId": 16175,
+            "exited": false
+        },
+        {
+            "deviceId": "c29c62f2",
+            "name": "com.gyyx.zoids",
+            "processId": 16405,
             "exited": true
         },
         {
             "deviceId": "c29c62f2",
             "name": "com.gyyx.zoids",
-            "processId": 23175,
+            "processId": 17166,
             "exited": true
         },
         {
             "deviceId": "c29c62f2",
+            "name": "com.gyyx.zoids",
+            "processId": 18087,
+            "exited": true
+        },
+        {
+            "deviceId": "c29c62f2",
+            "name": "com.gyyx.zoids",
+            "processId": 18465,
+            "exited": false
+        },
+        {
+            "deviceId": "VBJ0218702002747",
+            "name": "com.huawei.appmarket",
+            "processId": 7151,
+            "exited": true
+        },
+        {
+            "deviceId": "VBJ0218702002747",
             "name": "com.ShaoTools.ShaoTools",
-            "processId": 25247,
+            "processId": 25637,
+            "exited": true
+        },
+        {
+            "deviceId": "VBJ0218702002747",
+            "name": "com.huawei.filemanager",
+            "processId": 16441,
+            "exited": false
+        },
+        {
+            "deviceId": "VBJ0218702002747",
+            "name": "com.ShaoTools.ShaoTools",
+            "processId": 18690,
+            "exited": false
+        },
+        {
+            "deviceId": "LKN5T18B09003406",
+            "name": "com.huawei.appmarket",
+            "processId": 9783,
+            "exited": false
+        },
+        {
+            "deviceId": "LKN5T18B09003406",
+            "name": "com.ShaoTools.ShaoTools",
+            "processId": 15271,
             "exited": false
         }
     ],
