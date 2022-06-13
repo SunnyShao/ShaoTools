@@ -1,36 +1,36 @@
 using Cinemachine;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class BattleCameraComponent : MonoBehaviour
 {
-    private const string CAMERAHEIGHT = "CAMERAHEIGHT";
     private const string LAYERMASKNAME = "Plane";   //可拖动的层级
     private const float MOVE_DEVIATION = 5f;        //移动的偏差值
     private const float MOVE_CAMERA_CONFINER = 10;  //超出该限制后拉回相机
     private const float SCALE_SPEED = 2;            //相机无极缩放系数
     private const int FLIP_CONST = 20;              //自定义滑动系数
     private const float FLIP_DEVIATION = 10;        //滑动的偏差值
-    private const float FLIP_SPEED = 3;            //滑动的速度
+    private const float FLIP_SPEED = 3;             //滑动的速度
     private const float FLIP_STOP = 0.1f;           //滑动到多少距离停止
     private const float MIN_HEIGHT = 30;
     private const float MAX_HEIGHT = 65;
-    private const float DEFAULT_HEIGHT = 47f;
     private const float MIN_ANGLE = 45;
     private const float MAX_ANGLE = 60;
 
     private GameObject m_Cam;
-    private float cameraHeight; //相机高度
-    private float scaleOffset; //缩放偏移值
+    private float cameraHeight;         //相机高度
+    private float scaleOffset;          //缩放偏移值
     private float scaleLastDistance;
-    private bool canMove;   //是否可以移动
-    private bool canScale;  //是否可以无极缩放
-    private bool canFlip;   //是否可以惯性移动
-    private Vector2 startTouch; //按下时的屏幕坐标
-    private Vector2 endTouch;   //松手时的屏幕坐标
-    private Vector2 moveTempTouchPos; //移动时缓存的屏幕坐标
-    private Vector3 moveDir;    //每次移动的方向
-    private Vector3 flipTarget;     //滑动的终点
+    private bool canMove;               //是否可以移动
+    private bool canScale;              //是否可以无极缩放
+    private bool canFlip;               //是否可以惯性移动
+    private bool isPressAction;         //是否触发事件
+    private Vector2 startTouch;         //按下时的屏幕坐标
+    private Vector2 endTouch;           //松手时的屏幕坐标
+    private Vector2 moveTempTouchPos;   //移动时缓存的屏幕坐标
+    private Vector3 moveDir;            //每次移动的方向
+    private Vector3 flipTarget;         //滑动的终点
 
     private void OnEnable()
     {
@@ -40,19 +40,13 @@ public class BattleCameraComponent : MonoBehaviour
         InputManager.Instance.Controller.UI.Zoom.canceled += SrollYCancel;
         InputManager.Instance.Controller.UI.SecondPress.started += OnSecondTouchPress;
         InputManager.Instance.Controller.UI.SecondPress.canceled += OnSecondTouchCancel;
-
-        cameraHeight = PlayerPrefs.GetFloat(CAMERAHEIGHT, DEFAULT_HEIGHT);
+        cameraHeight = MAX_HEIGHT;
     }
 
     private void Start()
     {
         m_Cam = this.gameObject;
         SetCameraMovRot();
-    }
-
-    private void OnDisable()
-    {
-        PlayerPrefs.SetFloat(CAMERAHEIGHT, cameraHeight);
     }
 
     private void OnDestroy()
@@ -68,9 +62,19 @@ public class BattleCameraComponent : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if (isPressAction) //点击回调放在Update中处理，不在InputSystem中处理复杂逻辑
+        {
+            isPressAction = false;
+            if (!EventSystem.current.IsPointerOverGameObject())
+                Debug.Log("执行点击事件");
+        }
+    }
+
     private void LateUpdate()
     {
-        if (canScale)
+        if (canScale && !EventSystem.current.IsPointerOverGameObject())
         {
             var firstTouchPos = InputManager.Instance.Controller.UI.TouchScreen.ReadValue<Vector2>();
             var secondTouchPos = InputManager.Instance.Controller.UI.SecondTouch.ReadValue<Vector2>();
@@ -87,14 +91,12 @@ public class BattleCameraComponent : MonoBehaviour
             }
 
             SetCameraHeight();
-
             //如果到了最大高度 或者 最低高度 如果还是 这个方向的数据就不移动
             //Debug.LogError(scaleOffset + " = distance = " + distance);
-
             canMove = false;
         }
 
-        if (canMove)
+        if (canMove && !EventSystem.current.IsPointerOverGameObject())
         {
             var laterPoint = Vector3.zero;
             var afterPoint = Vector3.zero;
@@ -118,7 +120,6 @@ public class BattleCameraComponent : MonoBehaviour
                     moveDir = afterPoint - laterPoint;
                     if (Mathf.Abs(m_Cam.transform.position.x - Camera.main.transform.position.x) > MOVE_CAMERA_CONFINER || Mathf.Abs(m_Cam.transform.position.z - Camera.main.transform.position.z) > MOVE_CAMERA_CONFINER) //相机超出边界自动拉回
                     {
-                        //Debug.LogError("超出去了" + Mathf.Abs(m_VCam.transform.position.x - Camera.main.transform.position.x) + ":::" + Mathf.Abs(m_VCam.transform.position.z - Camera.main.transform.position.z));
                         m_Cam.transform.position = Camera.main.transform.position;
                     }
 
@@ -134,6 +135,8 @@ public class BattleCameraComponent : MonoBehaviour
                 moveTempTouchPos = touchPos;
             }
         }
+        else
+            canMove = false;  //点击到UI后 直接设置不可移动 放置后续惯性滑动功能执行
 
         if (canFlip)
         {
@@ -144,27 +147,11 @@ public class BattleCameraComponent : MonoBehaviour
                 canFlip = false;
             }
         }
-    }
 
-    private void SetCameraHeight()
-    {
-        if (scaleOffset > 0)
-            cameraHeight = m_Cam.transform.position.y + -SCALE_SPEED;
-        else
-            cameraHeight = m_Cam.transform.position.y + SCALE_SPEED;
-        cameraHeight = Mathf.Clamp(cameraHeight, MIN_HEIGHT, MAX_HEIGHT);
-        SetCameraMovRot();
-    }
-
-    private void SetCameraMovRot()
-    {
-        float rate = (cameraHeight - MIN_HEIGHT) / (MAX_HEIGHT - MIN_HEIGHT);
-        float targetAngle = rate * (MAX_ANGLE - MIN_ANGLE) + MIN_ANGLE;
-
-        m_Cam.transform.position = new Vector3(m_Cam.transform.position.x, cameraHeight, m_Cam.transform.position.z);
-        Vector3 targetRotate = m_Cam.transform.rotation.eulerAngles;
-        targetRotate.x = targetAngle;
-        m_Cam.transform.rotation = Quaternion.Euler(targetRotate);
+        if (scaleOffset != 0 && !EventSystem.current.IsPointerOverGameObject())
+        {
+            SetCameraHeight();
+        }
     }
 
     private void PressStart(InputAction.CallbackContext context)
@@ -188,7 +175,7 @@ public class BattleCameraComponent : MonoBehaviour
         }
         else
         {
-            //Debug.LogError("两次是相等的,进行点击逻辑");
+            isPressAction = true; //两次是相等的,进行点击逻辑
         }
         canMove = false;
         moveTempTouchPos = Vector2.zero;
@@ -199,7 +186,6 @@ public class BattleCameraComponent : MonoBehaviour
         canFlip = false; //缩放时禁止相机滑动
         var offet = context.ReadValue<Vector2>();
         scaleOffset = offet.y;
-        SetCameraHeight();
     }
 
     private void SrollYCancel(InputAction.CallbackContext contex)
@@ -217,5 +203,26 @@ public class BattleCameraComponent : MonoBehaviour
     {
         canScale = false;
         scaleLastDistance = 0;
+    }
+
+    private void SetCameraHeight()
+    {
+        if (scaleOffset > 0)
+            cameraHeight = m_Cam.transform.position.y + -SCALE_SPEED;
+        else
+            cameraHeight = m_Cam.transform.position.y + SCALE_SPEED;
+        cameraHeight = Mathf.Clamp(cameraHeight, MIN_HEIGHT, MAX_HEIGHT);
+        SetCameraMovRot();
+    }
+
+    private void SetCameraMovRot()
+    {
+        float rate = (cameraHeight - MIN_HEIGHT) / (MAX_HEIGHT - MIN_HEIGHT);
+        float targetAngle = rate * (MAX_ANGLE - MIN_ANGLE) + MIN_ANGLE;
+
+        m_Cam.transform.position = new Vector3(m_Cam.transform.position.x, cameraHeight, m_Cam.transform.position.z);
+        Vector3 targetRotate = m_Cam.transform.rotation.eulerAngles;
+        targetRotate.x = targetAngle;
+        m_Cam.transform.rotation = Quaternion.Euler(targetRotate);
     }
 }
