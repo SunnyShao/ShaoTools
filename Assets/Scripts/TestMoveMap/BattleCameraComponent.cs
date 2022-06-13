@@ -1,43 +1,38 @@
 using Cinemachine;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class BattleCameraComponent : MonoBehaviour
 {
-    public float speed;
-    public CinemachineVirtualCamera m_VCam;
-    public GameObject follower;
-    private Camera m_Cam;
+    private const string CAMERAHEIGHT = "CAMERAHEIGHT";
+    private const string LAYERMASKNAME = "Plane";   //可拖动的层级
+    private const float MOVE_DEVIATION = 5f;        //移动的偏差值
+    private const float MOVE_CAMERA_CONFINER = 10;  //超出该限制后拉回相机
+    private const float SCALE_SPEED = 2;            //相机无极缩放系数
+    private const int FLIP_CONST = 20;              //自定义滑动系数
+    private const float FLIP_DEVIATION = 10;        //滑动的偏差值
+    private const float FLIP_SPEED = 3;            //滑动的速度
+    private const float FLIP_STOP = 0.1f;           //滑动到多少距离停止
+    private const float MIN_HEIGHT = 30;
+    private const float MAX_HEIGHT = 65;
+    private const float DEFAULT_HEIGHT = 47f;
+    private const float MIN_ANGLE = 45;
+    private const float MAX_ANGLE = 60;
 
-    private Vector2 m_TouchPos;
+    private GameObject m_Cam;
+    private float cameraHeight; //相机高度
+    private float scaleOffset; //缩放偏移值
+    private float scaleLastDistance;
+    private bool canMove;   //是否可以移动
+    private bool canScale;  //是否可以无极缩放
+    private bool canFlip;   //是否可以惯性移动
+    private Vector2 startTouch; //按下时的屏幕坐标
+    private Vector2 endTouch;   //松手时的屏幕坐标
+    private Vector2 moveTempTouchPos; //移动时缓存的屏幕坐标
+    private Vector3 moveDir;    //每次移动的方向
+    private Vector3 flipTarget;     //滑动的终点
 
-    private float fovOffset;
-    private float lastFrameDistance;
-
-    private bool canMove;
-    private bool canScale;
-    private bool canRotate;
-
-    public float m_Distance;
-    public float m_Radius;
-
-    public Transform minConfine;
-    public Transform maxConfine;
-
-    public float minDistance;
-    public float maxDistance;
-
-    private CinemachineTransposer transposer;
-
-    private void Awake()
-    {
-        m_Cam = Camera.main;
-    }
-
-    // Start is called before the first frame update
-    private void Start()
+    private void OnEnable()
     {
         InputManager.Instance.Controller.UI.Press.started += PressStart;
         InputManager.Instance.Controller.UI.Press.canceled += PressCancel;
@@ -46,150 +41,21 @@ public class BattleCameraComponent : MonoBehaviour
         InputManager.Instance.Controller.UI.SecondPress.started += OnSecondTouchPress;
         InputManager.Instance.Controller.UI.SecondPress.canceled += OnSecondTouchCancel;
 
-        transposer = m_VCam.GetCinemachineComponent<CinemachineTransposer>();
+        cameraHeight = PlayerPrefs.GetFloat(CAMERAHEIGHT, DEFAULT_HEIGHT);
     }
 
-    private void LateUpdate()
+    private void Start()
     {
-        if (canScale)
-        {
-            var touchPos = InputManager.Instance.Controller.UI.TouchScreen.ReadValue<Vector2>();
-
-            var mainTouchPos = InputManager.Instance.Controller.UI.SecondTouch.ReadValue<Vector2>();
-
-            var distance = Vector2.Distance(mainTouchPos, touchPos);
-            //两个触点之间的距离
-            if (lastFrameDistance != 0)
-            {
-                var offset = distance - lastFrameDistance;
-                fovOffset = offset;
-                lastFrameDistance = distance;
-            }
-            else
-            {
-                lastFrameDistance = distance;
-            }
-            canMove = false;
-        }
-        if (canMove)
-        {
-            var laterPoint = Vector3.zero;
-            var afterPoint = Vector3.zero;
-            var touchPos = InputManager.Instance.Controller.UI.TouchScreen.ReadValue<Vector2>();
-            if (m_TouchPos != Vector2.zero)
-            {
-                Ray laterRay = m_Cam.ScreenPointToRay(m_TouchPos);
-                if (Physics.Raycast(laterRay, out var point, 1000, 1 << 9))
-                {
-                    laterPoint = point.point;
-                }
-
-                Ray afterRay = m_Cam.ScreenPointToRay(touchPos);
-                if (Physics.Raycast(afterRay, out var hit, 1000, 1 << 9))
-                {
-                    afterPoint = hit.point;
-                }
-                if (laterPoint != Vector3.zero && afterPoint != Vector3.zero)
-                {
-                    var dir = afterPoint - laterPoint;
-                    var flwPos = follower.transform.position;
-
-                    var targetPos = flwPos - dir;
-
-                    //var x = Mathf.Clamp(targetPos.x, minConfine.position.x, maxConfine.position.x);
-                    //var z = Mathf.Clamp(targetPos.z, minConfine.position.z, maxConfine.position.z);
-                    //follower.transform.position = new Vector3(x, targetPos.y, z);
-
-                    follower.transform.position = targetPos;
-                    m_TouchPos = touchPos;
-                }
-            }
-            else
-            {
-                m_TouchPos = touchPos;
-            }
-        }
-
-        var touchScalePos = Vector3.zero;
-        var followerPos = transposer.m_FollowOffset; //当前 FollowOffset
-        //计算目标位置的FollowOffset
-        var py = followerPos - (transposer.m_FollowOffset * Time.deltaTime) * fovOffset / 100 * speed;
-        //计算当前半径
-        var vCamPointInPlane = Vector3.ProjectOnPlane(m_VCam.transform.position, Vector3.up);
-        var oriPointInPlane = Vector3.ProjectOnPlane(follower.transform.position, Vector3.up);
-        m_Radius = (vCamPointInPlane - oriPointInPlane).magnitude;
-        //计算当前偏移距离
-        m_Distance = Vector3.Distance(follower.transform.position, m_VCam.transform.position);
-
-        //此处是缩放限制
-        if (((int)m_Distance) < ((int)maxDistance) && ((int)m_Distance) > ((int)minDistance))
-        {
-            touchScalePos = new Vector3(py.x, py.y, py.z);
-        }
-        else if (((int)m_Distance) >= ((int)maxDistance))
-        {
-            if (fovOffset > 0)
-            {
-                touchScalePos = new Vector3(py.x, py.y, py.z);
-            }
-            else if (fovOffset < 0)
-            {
-                touchScalePos = followerPos.normalized * maxDistance;
-            }
-        }
-        else if (((int)m_Distance) <= ((int)minDistance))
-        {
-            if (fovOffset < 0)
-            {
-                touchScalePos = new Vector3(py.x, py.y, py.z);
-            }
-            else if (fovOffset > 0)
-            {
-                touchScalePos = followerPos.normalized * minDistance;
-            }
-        }
-
-        if (fovOffset != 0 && touchScalePos != Vector3.zero && !canRotate)
-        {
-            transposer.m_FollowOffset = touchScalePos;
-        }
-        fovOffset = 0;
-    }
-
-    private void ScrollY(InputAction.CallbackContext context)
-    {
-        var offet = context.ReadValue<Vector2>();
-        fovOffset = offet.y;
-    }
-
-    private void SrollYCancel(InputAction.CallbackContext contex)
-    {
-        fovOffset = 0;
-    }
-
-    private void PressStart(InputAction.CallbackContext context)
-    {
-        canMove = true;
-    }
-
-    private void PressCancel(InputAction.CallbackContext context)
-    {
-        canMove = false;
-        m_TouchPos = Vector2.zero;
-    }
-
-    private void OnSecondTouchPress(InputAction.CallbackContext context)
-    {
-        canScale = true;
-    }
-
-    private void OnSecondTouchCancel(InputAction.CallbackContext context)
-    {
-        canScale = false;
-        lastFrameDistance = 0;
+        m_Cam = this.gameObject;
+        SetCameraMovRot();
     }
 
     private void OnDisable()
+    {
+        PlayerPrefs.SetFloat(CAMERAHEIGHT, cameraHeight);
+    }
+
+    private void OnDestroy()
     {
         if (InputManager.Instance != null)
         {
@@ -200,5 +66,156 @@ public class BattleCameraComponent : MonoBehaviour
             InputManager.Instance.Controller.UI.SecondPress.started -= OnSecondTouchPress;
             InputManager.Instance.Controller.UI.SecondPress.canceled -= OnSecondTouchCancel;
         }
+    }
+
+    private void LateUpdate()
+    {
+        if (canScale)
+        {
+            var firstTouchPos = InputManager.Instance.Controller.UI.TouchScreen.ReadValue<Vector2>();
+            var secondTouchPos = InputManager.Instance.Controller.UI.SecondTouch.ReadValue<Vector2>();
+            var distance = Vector2.Distance(secondTouchPos, firstTouchPos);
+            if (scaleLastDistance != 0)
+            {
+                var offset = distance - scaleLastDistance;
+                scaleOffset = offset;
+                scaleLastDistance = distance;
+            }
+            else
+            {
+                scaleLastDistance = distance;
+            }
+
+            SetCameraHeight();
+
+            //如果到了最大高度 或者 最低高度 如果还是 这个方向的数据就不移动
+            //Debug.LogError(scaleOffset + " = distance = " + distance);
+
+            canMove = false;
+        }
+
+        if (canMove)
+        {
+            var laterPoint = Vector3.zero;
+            var afterPoint = Vector3.zero;
+            var touchPos = InputManager.Instance.Controller.UI.TouchScreen.ReadValue<Vector2>();
+            if (moveTempTouchPos != Vector2.zero && moveTempTouchPos != touchPos)
+            {
+                Ray laterRay = Camera.main.ScreenPointToRay(moveTempTouchPos);
+                if (Physics.Raycast(laterRay, out var point, 1000, 1 << LayerMask.NameToLayer(LAYERMASKNAME)))
+                {
+                    laterPoint = point.point;
+                }
+
+                Ray afterRay = Camera.main.ScreenPointToRay(touchPos);
+                if (Physics.Raycast(afterRay, out var hit, 1000, 1 << LayerMask.NameToLayer(LAYERMASKNAME)))
+                {
+                    afterPoint = hit.point;
+                }
+
+                if (laterPoint != Vector3.zero && afterPoint != Vector3.zero && laterPoint != afterPoint)
+                {
+                    moveDir = afterPoint - laterPoint;
+                    if (Mathf.Abs(m_Cam.transform.position.x - Camera.main.transform.position.x) > MOVE_CAMERA_CONFINER || Mathf.Abs(m_Cam.transform.position.z - Camera.main.transform.position.z) > MOVE_CAMERA_CONFINER) //相机超出边界自动拉回
+                    {
+                        //Debug.LogError("超出去了" + Mathf.Abs(m_VCam.transform.position.x - Camera.main.transform.position.x) + ":::" + Mathf.Abs(m_VCam.transform.position.z - Camera.main.transform.position.z));
+                        m_Cam.transform.position = Camera.main.transform.position;
+                    }
+
+                    moveDir = new Vector3(moveDir.x, 0, moveDir.z); //避免y轴上的移动(仅平面移动)
+                    var flwPos = m_Cam.transform.position;
+                    var targetPos = flwPos - moveDir;
+                    m_Cam.transform.position = targetPos;
+                    moveTempTouchPos = touchPos;
+                }
+            }
+            else
+            {
+                moveTempTouchPos = touchPos;
+            }
+        }
+
+        if (canFlip)
+        {
+            var newVec = Vector3.Lerp(m_Cam.transform.position, flipTarget, Time.deltaTime * FLIP_SPEED);
+            m_Cam.transform.position = newVec;
+            if (Vector3.Distance(m_Cam.transform.position, flipTarget) < FLIP_STOP)
+            {
+                canFlip = false;
+            }
+        }
+    }
+
+    private void SetCameraHeight()
+    {
+        if (scaleOffset > 0)
+            cameraHeight = m_Cam.transform.position.y + -SCALE_SPEED;
+        else
+            cameraHeight = m_Cam.transform.position.y + SCALE_SPEED;
+        cameraHeight = Mathf.Clamp(cameraHeight, MIN_HEIGHT, MAX_HEIGHT);
+        SetCameraMovRot();
+    }
+
+    private void SetCameraMovRot()
+    {
+        float rate = (cameraHeight - MIN_HEIGHT) / (MAX_HEIGHT - MIN_HEIGHT);
+        float targetAngle = rate * (MAX_ANGLE - MIN_ANGLE) + MIN_ANGLE;
+
+        m_Cam.transform.position = new Vector3(m_Cam.transform.position.x, cameraHeight, m_Cam.transform.position.z);
+        Vector3 targetRotate = m_Cam.transform.rotation.eulerAngles;
+        targetRotate.x = targetAngle;
+        m_Cam.transform.rotation = Quaternion.Euler(targetRotate);
+    }
+
+    private void PressStart(InputAction.CallbackContext context)
+    {
+        canFlip = false; //移动时禁止相机滑动
+        startTouch = InputManager.Instance.Controller.UI.TouchScreen.ReadValue<Vector2>();
+        canMove = true;
+    }
+
+    private void PressCancel(InputAction.CallbackContext context)
+    {
+        endTouch = InputManager.Instance.Controller.UI.TouchScreen.ReadValue<Vector2>();
+        if (startTouch != Vector2.zero && endTouch != Vector2.zero && Vector2.Distance(startTouch, endTouch) > MOVE_DEVIATION)
+        {
+            var touchPosCancel = InputManager.Instance.Controller.UI.TouchScreen.ReadValue<Vector2>();
+            if (Vector2.Distance(touchPosCancel, moveTempTouchPos) > FLIP_DEVIATION && canMove) //松手时触摸屏幕的坐标 和 最后一次移动时触摸屏幕的坐标 超过一定数值就惯性滑动
+            {
+                canFlip = true;
+                flipTarget = m_Cam.transform.position - (moveDir.normalized * FLIP_CONST); //目标值
+            }
+        }
+        else
+        {
+            //Debug.LogError("两次是相等的,进行点击逻辑");
+        }
+        canMove = false;
+        moveTempTouchPos = Vector2.zero;
+    }
+
+    private void ScrollY(InputAction.CallbackContext context)
+    {
+        canFlip = false; //缩放时禁止相机滑动
+        var offet = context.ReadValue<Vector2>();
+        scaleOffset = offet.y;
+        SetCameraHeight();
+    }
+
+    private void SrollYCancel(InputAction.CallbackContext contex)
+    {
+        scaleOffset = 0;
+    }
+
+    private void OnSecondTouchPress(InputAction.CallbackContext context)
+    {
+        canFlip = false; //缩放时禁止相机滑动
+        canScale = true;
+    }
+
+    private void OnSecondTouchCancel(InputAction.CallbackContext context)
+    {
+        canScale = false;
+        scaleLastDistance = 0;
     }
 }
