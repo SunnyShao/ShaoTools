@@ -8,15 +8,15 @@ public class BattleCameraComponent : MonoBehaviour
     private const string LAYERMASKNAME = "Plane";   //可拖动的层级
     private const float MOVE_DEVIATION = 5f;        //移动的偏差值
     private const float MOVE_CAMERA_CONFINER = 10;  //超出该限制后拉回相机
-    private const float SCALE_SPEED = 2;            //相机无极缩放系数
+    private const float SCALE_SPEED = 4;            //相机无极缩放系数
     private const int FLIP_CONST = 20;              //自定义滑动系数
     private const float FLIP_DEVIATION = 10;        //滑动的偏差值
     private const float FLIP_SPEED = 3;             //滑动的速度
     private const float FLIP_STOP = 0.1f;           //滑动到多少距离停止
-    private const float MIN_HEIGHT = 30;
-    private const float MAX_HEIGHT = 65;
-    private const float MIN_ANGLE = 45;
-    private const float MAX_ANGLE = 60;
+    private const float MIN_HEIGHT = 110;
+    private const float MAX_HEIGHT = 300;
+    private const float MIN_ANGLE = 70;
+    private const float MAX_ANGLE = 80;
 
     private GameObject m_Cam;
     private float cameraHeight;         //相机高度

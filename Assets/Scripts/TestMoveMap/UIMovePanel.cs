@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,7 +10,6 @@ public class UIMovePanel : MonoBehaviour
 
     private List<GameObject> moveUIList = new List<GameObject>();
 
-    // Start is called before the first frame update
     void Start()
     {
         moveUI = transform.Find("MoveUI").gameObject;
@@ -28,7 +26,6 @@ public class UIMovePanel : MonoBehaviour
         moveUIList.Clear();
     }
 
-    // Update is called once per frame
     void Update()
     {
         for (int i = 0; i < followObj.Length; i++)
