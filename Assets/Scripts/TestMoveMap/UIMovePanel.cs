@@ -26,7 +26,7 @@ public class UIMovePanel : MonoBehaviour
         moveUIList.Clear();
     }
 
-    void Update()
+    void LateUpdate()
     {
         for (int i = 0; i < followObj.Length; i++)
         {

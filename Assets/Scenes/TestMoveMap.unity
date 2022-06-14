@@ -2233,7 +2233,7 @@ MonoBehaviour:
   - {fileID: 172860574}
   - {fileID: 1203236006}
   uicamera: {fileID: 714653981}
-  offest: {x: -10, y: 0, z: 7}
+  offest: {x: -14, y: 0, z: 7}
 --- !u!1 &1548235208
 GameObject:
   m_ObjectHideFlags: 0
