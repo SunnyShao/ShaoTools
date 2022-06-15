@@ -13,9 +13,14 @@ public class UIMovePanel : MonoBehaviour
     void Start()
     {
         moveUI = transform.Find("MoveUI").gameObject;
+        InitWorldUI();
+    }
+
+    private void InitWorldUI()
+    {
         for (int i = 0; i < followObj.Length; i++)
         {
-            var obj = Instantiate(moveUI ,moveUI.transform.parent);
+            var obj = Instantiate(moveUI, moveUI.transform.parent);
             moveUIList.Add(obj);
         }
         moveUI.SetActive(false);
@@ -30,10 +35,11 @@ public class UIMovePanel : MonoBehaviour
     {
         for (int i = 0; i < followObj.Length; i++)
         {
-            moveUIList[i].GetComponent<RectTransform>().anchoredPosition = GetUIPos(followObj[i].transform.position + offest);
+            moveUIList[i].GetComponent<RectTransform>().anchoredPosition = GetUIPos(followObj[i].transform.position + offest); //时刻转换
         }
     }
 
+    //3D世界坐标转换为UI坐标
     private Vector2 GetUIPos(Vector3 worldPos)
     {
         Vector2 uiPos;
