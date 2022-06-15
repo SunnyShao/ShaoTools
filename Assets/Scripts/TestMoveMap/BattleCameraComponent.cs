@@ -68,7 +68,7 @@ public class BattleCameraComponent : MonoBehaviour
         {
             isPressAction = false;
             if (!EventSystem.current.IsPointerOverGameObject())
-                Debug.Log("执行点击事件");
+                UIMovePanel.instance.OnMapClick(InputManager.Instance.Controller.UI.TouchScreen.ReadValue<Vector2>());
         }
     }
 
