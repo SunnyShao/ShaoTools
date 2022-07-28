@@ -1342,9 +1342,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnObj: {fileID: 2019528011}
-  _count: 1
-  radius: 100
-  a: 20
+  _count: 2
+  _radius: 100
+  _average: 10
 --- !u!1 &624452139
 GameObject:
   m_ObjectHideFlags: 0
