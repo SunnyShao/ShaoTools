@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/TestMoveMap.unity
+    path: Assets/Scenes/MoveMap_FreeMove.unity
     guid: 65fd191d44a7f7d41bd5cf231e0a2aff
   m_configObjects: {}
