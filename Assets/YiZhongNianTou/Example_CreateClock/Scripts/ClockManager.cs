@@ -27,8 +27,6 @@ namespace Example_CreateClock
 
         void Start()
         {
-            Debug.Log(DateTime.Now);
-            Debug.Log(DateTime.Now.Hour);
             for (int i = 0; i < ClockHours; i++)
             {
                 GameObject hourSpawn = Instantiate(hourItem, transform);
@@ -36,19 +34,23 @@ namespace Example_CreateClock
             }
         }
 
-#if CLOCK_SAMPLE_TIME
+#if CLOCK_SIMPLE_TIME
+        //第二种时钟，简易时针 时针每隔一小时跳一下
         void Update()
         {
-            hour_Arm.rotation = Quaternion.Euler(new Vector3(0, DateTime.Now.Hour % ClockHours * EveryHourAngle, 0));
-            minute_Arm.rotation = Quaternion.Euler(new Vector3(0, DateTime.Now.Minute * EveryMinuteAngle, 0));
-            second_Arm.rotation = Quaternion.Euler(new Vector3(0, DateTime.Now.Second * EveryMinuteAngle, 0));
+              DateTime curNow = DateTime.Now;
+              hour_Arm.rotation = Quaternion.Euler(new Vector3(0f, curNow.Hour * EveryHourAngle, 0f));
+              minute_Arm.rotation = Quaternion.Euler(new Vector3(0f, curNow.Minute * EveryMinuteAngle, 0f));
+              second_Arm.rotation = Quaternion.Euler(new Vector3(0f, curNow.Second * EveryMinuteAngle, 0f));
         }
 #else
+        //第一种时钟，时刻向前 平滑过渡
         void Update()
         {
-            hour_Arm.rotation = Quaternion.Euler(new Vector3(0, DateTime.Now.Hour % ClockHours * EveryHourAngle, 0));
-            minute_Arm.rotation = Quaternion.Euler(new Vector3(0, DateTime.Now.Minute * EveryMinuteAngle, 0));
-            second_Arm.rotation = Quaternion.Euler(new Vector3(0, DateTime.Now.Second * EveryMinuteAngle, 0));
+            TimeSpan timeSpan = DateTime.Now.TimeOfDay;
+            hour_Arm.rotation = Quaternion.Euler(new Vector3(0f, (float)timeSpan.TotalHours * EveryHourAngle, 0f));
+            minute_Arm.rotation = Quaternion.Euler(new Vector3(0f, (float)timeSpan.TotalMinutes * EveryMinuteAngle, 0f));
+            second_Arm.rotation = Quaternion.Euler(new Vector3(0f, (float)timeSpan.TotalSeconds * EveryMinuteAngle, 0f));
         }
 #endif
     }
