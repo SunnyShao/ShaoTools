@@ -1,0 +1,5 @@
+TimeSpan timeSpan = DateTime.Now.TimeOfDay;
+代表的是取得当天时间相关的信息
+
+TimeSpan timeSpan = new TimeSpan(DateTime.Now.Ticks);
+这样取得的时间应该是 1970年以来得到的时间信息

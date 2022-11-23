@@ -10,12 +10,12 @@ public class Example01_CreateFuncGraph : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
-    }
+        for (int i = 0; i < 10; i++)
+        {
+            Transform trans = Instantiate(pointPrefab);
+            trans.localPosition = Vector3.right * (i / 5f - 1f);
+            trans.localScale = Vector3.one / 5;
+        }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
