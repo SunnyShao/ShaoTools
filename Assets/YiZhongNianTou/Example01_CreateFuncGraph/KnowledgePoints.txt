@@ -1,6 +1,10 @@
-����Float���͵ļ��㣬����������ֺ����F��ϰ�ߡ�
+对于Float类型的计算，最好养成数字后面带F的习惯。
 
-1. ���ȸо����д int���͵Ļ���ϵͳ��Ĭ��ת��һ��Ϊ Float���ͣ���Ȼ���ܿ��������ԣ����ǻ��������ϰ�߱ȽϺ�
-2. ��α������� trans.localPosition = Vector3.right * (i / 5f - 1f); 
-	�����ļ��������£������д F������  Vector3.right * (i / 5 - 1); 
-	�������õ���ֵ����һ�� Int���� �Ľ������������Ҫ��С��������Щ��һ�¡�д��F�󣬼������ͻᰴ��С�������
+1. 首先感觉如果写 int类型的话，系统会默认转换一次为 Float类型，虽然可能开销不明显，但是还是有这个习惯比较好
+2. 其次比如遇到 trans.localPosition = Vector3.right * (i / 5f - 1f); 
+	这样的计算的情况下，如果不写 F，类似  Vector3.right * (i / 5 - 1); 
+	这样，得到的值就是一个 Int类型 的结果，和我们想要的小数坐标有些不一致。写了F后，计算结果就会按照小数来获得
+
+
+trans.SetParent(transform , false);
+	此函数默认会将尝试将对象保持在它原来的世界位置、旋转和缩放，设置为false则根据父物体走
