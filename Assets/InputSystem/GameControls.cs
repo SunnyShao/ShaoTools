@@ -145,7 +145,7 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                     ""id"": ""56389a8a-188e-4b4b-98e9-8736230a7ba6"",
                     ""expectedControlType"": """",
                     ""processors"": """",
-                    ""interactions"": """",
+                    ""interactions"": ""MultiTap(tapCount=10)"",
                     ""initialStateCheck"": true
                 },
                 {
