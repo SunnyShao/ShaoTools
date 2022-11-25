@@ -65,7 +65,7 @@ public class Example01_CreateFuncGraph : MonoBehaviour
         {
             Transform point = points[i];
             Vector3 pos = point.localPosition;
-            pos.y = Mathf.Sin((pos.x + Time.time) * Mathf.PI);
+            pos.y = Mathf.Sin(Mathf.PI * (pos.x + Time.time));
             point.localPosition = pos;
         }
     }
