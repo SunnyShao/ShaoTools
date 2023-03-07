@@ -255,6 +255,76 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Common"",
+            ""id"": ""0b853f67-c532-4ed3-b97e-660be519e474"",
+            ""actions"": [
+                {
+                    ""name"": ""Press"",
+                    ""type"": ""Value"",
+                    ""id"": ""4e5aaf33-2c22-4940-98c4-46e8b79e799b"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""TouchScreen"",
+                    ""type"": ""Value"",
+                    ""id"": ""2aa75417-3a53-4724-ab4e-bd4d49bb3c2b"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""45a7c72d-5303-4f52-a55b-48fb51d501f5"",
+                    ""path"": ""<Mouse>/press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Press"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a32fb8f7-652f-489a-87d3-151edbace3eb"",
+                    ""path"": ""<Touchscreen>/Press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Press"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""413291f2-71ca-4a66-bebb-31f143571020"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TouchScreen"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""331fb343-01f3-46a9-a76a-a8f302ca750d"",
+                    ""path"": ""<Touchscreen>/primaryTouch/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TouchScreen"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -270,6 +340,10 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
         m_UI_Zoom = m_UI.FindAction("Zoom", throwIfNotFound: true);
         m_UI_SecondTouch = m_UI.FindAction("SecondTouch", throwIfNotFound: true);
         m_UI_SecondPress = m_UI.FindAction("SecondPress", throwIfNotFound: true);
+        // Common
+        m_Common = asset.FindActionMap("Common", throwIfNotFound: true);
+        m_Common_Press = m_Common.FindAction("Press", throwIfNotFound: true);
+        m_Common_TouchScreen = m_Common.FindAction("TouchScreen", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -431,6 +505,47 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
         }
     }
     public UIActions @UI => new UIActions(this);
+
+    // Common
+    private readonly InputActionMap m_Common;
+    private ICommonActions m_CommonActionsCallbackInterface;
+    private readonly InputAction m_Common_Press;
+    private readonly InputAction m_Common_TouchScreen;
+    public struct CommonActions
+    {
+        private @GameControls m_Wrapper;
+        public CommonActions(@GameControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Press => m_Wrapper.m_Common_Press;
+        public InputAction @TouchScreen => m_Wrapper.m_Common_TouchScreen;
+        public InputActionMap Get() { return m_Wrapper.m_Common; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(CommonActions set) { return set.Get(); }
+        public void SetCallbacks(ICommonActions instance)
+        {
+            if (m_Wrapper.m_CommonActionsCallbackInterface != null)
+            {
+                @Press.started -= m_Wrapper.m_CommonActionsCallbackInterface.OnPress;
+                @Press.performed -= m_Wrapper.m_CommonActionsCallbackInterface.OnPress;
+                @Press.canceled -= m_Wrapper.m_CommonActionsCallbackInterface.OnPress;
+                @TouchScreen.started -= m_Wrapper.m_CommonActionsCallbackInterface.OnTouchScreen;
+                @TouchScreen.performed -= m_Wrapper.m_CommonActionsCallbackInterface.OnTouchScreen;
+                @TouchScreen.canceled -= m_Wrapper.m_CommonActionsCallbackInterface.OnTouchScreen;
+            }
+            m_Wrapper.m_CommonActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Press.started += instance.OnPress;
+                @Press.performed += instance.OnPress;
+                @Press.canceled += instance.OnPress;
+                @TouchScreen.started += instance.OnTouchScreen;
+                @TouchScreen.performed += instance.OnTouchScreen;
+                @TouchScreen.canceled += instance.OnTouchScreen;
+            }
+        }
+    }
+    public CommonActions @Common => new CommonActions(this);
     public interface IPlayerActions
     {
         void OnMove(InputAction.CallbackContext context);
@@ -443,5 +558,10 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
         void OnZoom(InputAction.CallbackContext context);
         void OnSecondTouch(InputAction.CallbackContext context);
         void OnSecondPress(InputAction.CallbackContext context);
+    }
+    public interface ICommonActions
+    {
+        void OnPress(InputAction.CallbackContext context);
+        void OnTouchScreen(InputAction.CallbackContext context);
     }
 }

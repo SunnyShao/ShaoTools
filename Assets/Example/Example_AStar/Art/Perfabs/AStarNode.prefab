@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3029323966874061489}
   m_Layer: 0
   m_Name: AStarNode
-  m_TagString: Untagged
+  m_TagString: AStar_Node
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -4,8 +4,6 @@ public class InputManager : SingletonBehaviour<InputManager>
 {
     public GameControls Controller { get; private set; }
 
-    public Vector2 TouchPosition { get; private set; }
-
     protected override void OnInitialized()
     {
         base.OnInitialized();

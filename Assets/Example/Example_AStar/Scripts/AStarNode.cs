@@ -16,38 +16,56 @@ namespace Example_AStar
         public float H;
 
         [Header("坐标")]
-        public float x;
-        public float y;
+        public int x;
+        public int y;
 
         [Header("父节点")]
-        public AStarNode father;
+        public AStarNode parentNode;
 
         [Header("类型")]
         public NodeType nodeType;
 
-        public void Init(float x, float y, NodeType type)
+        private MeshRenderer curMeshRenderer;
+
+         void Awake()
+        {
+            curMeshRenderer = GetComponent<MeshRenderer>();
+        }
+
+        public void Init(int x, int y, NodeType type)
         {
             this.x = x;
             this.y = y;
             this.nodeType = type;
-
-            if (this.nodeType == NodeType.STOP)
-                gameObject.GetComponent<MeshRenderer>().material = AStarMain.instance.m_StopMat;
+            SetInitColor();
         }
 
         public void SetAStarValue(AStarNode startNode, AStarNode endNode)
         {
             var startPos = new Vector2(startNode.x, startNode.y);
-            var endPos = new Vector2(endNode.x, endNode.y);
-
-            G = Vector2.Distance(new Vector2(x, y), startPos);
-            H = Vector2.Distance(startPos, endPos);
+            G = parentNode.G + Mathf.Abs(Vector2.Distance(new Vector2(x, y), startPos)); //父节点距离起点距离 + 当前节点距离传进来起始点距离
+            H = Mathf.Abs(endNode.x - x) + Mathf.Abs(endNode.y - y);    //当前节点到终点距离
             F = G + H;
         }
 
-        public void SetNodeFather(AStarNode fatherNode)
+        public void SetNodeParent(AStarNode parentNode)
         {
-            father = fatherNode;
+            this.parentNode = parentNode;
+        }
+
+        public void SetInitColor()
+        {
+            curMeshRenderer.material = this.nodeType == NodeType.STOP ? AStarMain.Instance.m_StopMat : AStarMain.Instance.m_WalkMat;
+        }
+
+        public void SetSelectStartColor()
+        {
+            curMeshRenderer.material = AStarMain.Instance.m_SelectStartMat;
+        }
+
+        public void SetSelectEndColor()
+        {
+            curMeshRenderer.material = AStarMain.Instance.m_SelectEndMat;
         }
     }
 }

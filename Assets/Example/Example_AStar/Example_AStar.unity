@@ -152,10 +152,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 608aca30a305e4643a31c1331e1c66fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  updateMode: 1
   m_MapW: 10
-  m_MapH: 10
+  m_MapH: 8
   m_AStarNode: {fileID: 3029323966874061491, guid: c999b223ad0c8eb4591ddec7e9316a1a, type: 3}
+  m_WalkMat: {fileID: 2100000, guid: 034dfed9403d9fa499efe3d45b99fba9, type: 2}
   m_StopMat: {fileID: 2100000, guid: b59b302e316f5c9428a31fec21194110, type: 2}
+  m_SelectStartMat: {fileID: 2100000, guid: a0bb8a90effc86e4ca50b556115de2bc, type: 2}
+  m_SelectEndMat: {fileID: 2100000, guid: f18f1a3ab215a714baaea0d8727dbff9, type: 2}
+  m_SelectStartNode: {fileID: 0}
+  m_SelectNodes: []
 --- !u!4 &305009360
 Transform:
   m_ObjectHideFlags: 0
