@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 namespace Example_AStar
@@ -28,11 +25,14 @@ namespace Example_AStar
         [Header("¿‡–Õ")]
         public NodeType nodeType;
 
-        public AStarNode(float x, float y, NodeType type)
+        public void Init(float x, float y, NodeType type)
         {
             this.x = x;
             this.y = y;
             this.nodeType = type;
+
+            if (this.nodeType == NodeType.STOP)
+                gameObject.GetComponent<MeshRenderer>().material = AStarMain.instance.m_StopMat;
         }
 
         public void SetAStarValue(AStarNode startNode, AStarNode endNode)
@@ -48,11 +48,6 @@ namespace Example_AStar
         public void SetNodeFather(AStarNode fatherNode)
         {
             father = fatherNode;
-        }
-
-        private void Start()
-        {
-          
         }
     }
 }

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Example_AStar
@@ -13,8 +11,8 @@ namespace Example_AStar
         public int m_MapH;
 
         [Header("格子预制件相关")]
-        public Transform m_AStarParent;
         public GameObject m_AStarNode;
+        public Material m_StopMat;
 
         private void Awake()
         {
@@ -25,12 +23,6 @@ namespace Example_AStar
         void Start()
         {
             AStarManager.Instance.InitMap(m_MapW, m_MapH);
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
         }
     }
 }
