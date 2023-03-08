@@ -3,29 +3,11 @@
     "m_SelectedPackage": {
         "deviceId": "77f9ca14",
         "name": "com.taurus.tools",
-        "processId": 14136,
+        "processId": 32269,
         "exited": false
     },
-    "m_SelectedPriority": 4,
+    "m_SelectedPriority": 0,
     "m_KnownPackagesForSerialization": [
-        {
-            "deviceId": "77f9ca14",
-            "name": "com.miui.packageinstaller",
-            "processId": 14270,
-            "exited": true
-        },
-        {
-            "deviceId": "77f9ca14",
-            "name": "com.gyyx.zoids",
-            "processId": 14711,
-            "exited": true
-        },
-        {
-            "deviceId": "77f9ca14",
-            "name": "com.gyyx.zoids",
-            "processId": 17448,
-            "exited": true
-        },
         {
             "deviceId": "77f9ca14",
             "name": "com.android.settings",
@@ -48,6 +30,24 @@
             "deviceId": "77f9ca14",
             "name": "com.taurus.tools",
             "processId": 14136,
+            "exited": true
+        },
+        {
+            "deviceId": "77f9ca14",
+            "name": "com.taurus.tools",
+            "processId": 6927,
+            "exited": true
+        },
+        {
+            "deviceId": "77f9ca14",
+            "name": "com.taurus.tools",
+            "processId": 25761,
+            "exited": true
+        },
+        {
+            "deviceId": "77f9ca14",
+            "name": "com.taurus.tools",
+            "processId": 32269,
             "exited": false
         },
         {

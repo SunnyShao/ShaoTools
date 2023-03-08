@@ -40,6 +40,14 @@ namespace Example_AStar
             SetInitColor();
         }
 
+        public void Reset()
+        {
+            F = 0;
+            G = 0;
+            H = 0;
+            parentNode = null;
+        }
+
         public void SetAStarValue(AStarNode startNode, AStarNode endNode)
         {
             var startPos = new Vector2(startNode.x, startNode.y);

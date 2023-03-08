@@ -240,9 +240,9 @@
             "actions": [
                 {
                     "name": "Press",
-                    "type": "Value",
+                    "type": "Button",
                     "id": "4e5aaf33-2c22-4940-98c4-46e8b79e799b",
-                    "expectedControlType": "",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true

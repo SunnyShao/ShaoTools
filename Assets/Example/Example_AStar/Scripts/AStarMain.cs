@@ -29,44 +29,25 @@ namespace Example_AStar
         void OnEnable()
         {
             //兼容手机和电脑的触摸操作
-            InputManager.Instance.Controller.Common.TouchScreen.performed += OnTouchScreenPerformed;
             InputManager.Instance.Controller.Common.Press.started += OnTouchStarted;
         }
 
         private void OnTouchStarted(InputAction.CallbackContext obj)
         {
+            mousePos = InputManager.Instance.Controller.Common.TouchScreen.ReadValue<Vector2>();
             ray = Camera.main.ScreenPointToRay(mousePos);
             if (Physics.Raycast(ray, out raycastHit, 1000))
             {
                 if (raycastHit.collider.gameObject.tag == "AStar_Node")
                 {
-                    Debug.LogError("检测物体名字 = " + raycastHit.collider.gameObject.name);
                     OnSelectNode(raycastHit.collider.GetComponent<AStarNode>());
                 }
             }
         }
 
-        private void OnTouchScreenPerformed(InputAction.CallbackContext obj)
-        {
-            mousePos = obj.ReadValue<Vector2>();
-        }
-
         void Start()
         {
             AStarManager.Instance.InitMap(m_MapW, m_MapH);
-        }
-
-        void OnDisable()
-        {
-            Debug.Log("AStarMain OnDisable" + (InputManager.Instance == null));
-            InputManager.Instance.Controller.Common.TouchScreen.performed -= OnTouchScreenPerformed;
-            InputManager.Instance.Controller.Common.Press.started -= OnTouchStarted;
-        }
-
-        private void OnDestroy()
-        {
-            m_SelectNodes.Clear();
-            m_SelectNodes = null;
         }
 
         public void OnSelectNode(AStarNode node)
@@ -80,6 +61,7 @@ namespace Example_AStar
             if (m_SelectStartNode == null)
             {
                 ResetColor();
+                ClearData();
 
                 m_SelectStartNode = node;
                 m_SelectStartNode.SetSelectStartColor();
@@ -105,6 +87,9 @@ namespace Example_AStar
         //设置本次选中的颜色
         public void ResetColor(bool isReset = true)
         {
+            if (m_SelectNodes == null)
+                return;
+
             for (int i = 0; i < m_SelectNodes.Count; i++)
             {
                 if (isReset)
@@ -112,6 +97,24 @@ namespace Example_AStar
                 else
                     m_SelectNodes[i].SetSelectEndColor();
             }
+        }
+
+        void OnDisable()
+        {
+            InputManager.Instance.Controller.Common.Press.started -= OnTouchStarted;
+        }
+
+        private void OnDestroy()
+        {
+            ClearData();
+        }
+
+        private void ClearData()
+        {
+            m_SelectStartNode = null;
+
+            m_SelectNodes?.Clear();
+            m_SelectNodes = null;
         }
     }
 }
