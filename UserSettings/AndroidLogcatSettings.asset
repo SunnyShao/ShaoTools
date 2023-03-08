@@ -1,42 +1,18 @@
 {
-    "m_SelectedDeviceId": "c29c62f2",
+    "m_SelectedDeviceId": "77f9ca14",
     "m_SelectedPackage": {
-        "deviceId": "c29c62f2",
-        "name": "com.gyyx.zoids",
-        "processId": 18465,
+        "deviceId": "77f9ca14",
+        "name": "com.taurus.tools",
+        "processId": 14136,
         "exited": false
     },
-    "m_SelectedPriority": 0,
+    "m_SelectedPriority": 4,
     "m_KnownPackagesForSerialization": [
-        {
-            "deviceId": "77f9ca14",
-            "name": "com.ShaoTools.ShaoTools",
-            "processId": 4966,
-            "exited": true
-        },
-        {
-            "deviceId": "77f9ca14",
-            "name": "com.ShaoTools.ShaoTools",
-            "processId": 6086,
-            "exited": true
-        },
-        {
-            "deviceId": "77f9ca14",
-            "name": "com.ShaoTools.ShaoTools",
-            "processId": 8614,
-            "exited": true
-        },
-        {
-            "deviceId": "77f9ca14",
-            "name": "com.gyyx.zoids",
-            "processId": 31352,
-            "exited": true
-        },
         {
             "deviceId": "77f9ca14",
             "name": "com.miui.packageinstaller",
             "processId": 14270,
-            "exited": false
+            "exited": true
         },
         {
             "deviceId": "77f9ca14",
@@ -48,6 +24,30 @@
             "deviceId": "77f9ca14",
             "name": "com.gyyx.zoids",
             "processId": 17448,
+            "exited": true
+        },
+        {
+            "deviceId": "77f9ca14",
+            "name": "com.android.settings",
+            "processId": 11217,
+            "exited": true
+        },
+        {
+            "deviceId": "77f9ca14",
+            "name": "com.ShaoTools.ShaoTools",
+            "processId": 31050,
+            "exited": true
+        },
+        {
+            "deviceId": "77f9ca14",
+            "name": "com.miui.home",
+            "processId": 22624,
+            "exited": false
+        },
+        {
+            "deviceId": "77f9ca14",
+            "name": "com.taurus.tools",
+            "processId": 14136,
             "exited": false
         },
         {

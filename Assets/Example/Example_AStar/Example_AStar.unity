@@ -154,7 +154,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   updateMode: 1
   m_MapW: 10
-  m_MapH: 8
+  m_MapH: 10
   m_AStarNode: {fileID: 3029323966874061491, guid: c999b223ad0c8eb4591ddec7e9316a1a, type: 3}
   m_WalkMat: {fileID: 2100000, guid: 034dfed9403d9fa499efe3d45b99fba9, type: 2}
   m_StopMat: {fileID: 2100000, guid: b59b302e316f5c9428a31fec21194110, type: 2}

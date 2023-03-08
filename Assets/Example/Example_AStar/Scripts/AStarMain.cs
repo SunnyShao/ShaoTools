@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -22,8 +20,11 @@ namespace Example_AStar
         [Header("选择的格子")]
         public AStarNode m_SelectStartNode;
 
+        //临时变量
         public List<AStarNode> m_SelectNodes;
         private Vector2 mousePos;
+        private RaycastHit raycastHit;
+        private Ray ray;
 
         void OnEnable()
         {
@@ -34,8 +35,7 @@ namespace Example_AStar
 
         private void OnTouchStarted(InputAction.CallbackContext obj)
         {
-            RaycastHit raycastHit;
-            Ray ray = Camera.main.ScreenPointToRay(mousePos);
+            ray = Camera.main.ScreenPointToRay(mousePos);
             if (Physics.Raycast(ray, out raycastHit, 1000))
             {
                 if (raycastHit.collider.gameObject.tag == "AStar_Node")
@@ -58,8 +58,15 @@ namespace Example_AStar
 
         void OnDisable()
         {
+            Debug.Log("AStarMain OnDisable" + (InputManager.Instance == null));
             InputManager.Instance.Controller.Common.TouchScreen.performed -= OnTouchScreenPerformed;
             InputManager.Instance.Controller.Common.Press.started -= OnTouchStarted;
+        }
+
+        private void OnDestroy()
+        {
+            m_SelectNodes.Clear();
+            m_SelectNodes = null;
         }
 
         public void OnSelectNode(AStarNode node)
@@ -86,7 +93,10 @@ namespace Example_AStar
                 }
 
                 m_SelectNodes = AStarManager.Instance.FindPath(m_SelectStartNode, node);
-                Debug.LogError(m_SelectNodes.Count);
+
+                if (m_SelectNodes == null)
+                    Debug.LogWarning("存在死路，本次寻路无法完成");
+
                 ResetColor(false);
                 m_SelectStartNode = null;
             }

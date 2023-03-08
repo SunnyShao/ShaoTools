@@ -20,12 +20,13 @@ namespace Example_AStar
         //地图所有格子的容器
         private AStarNode[,] nodes;
 
-        public List<AStarNode> openList = new List<AStarNode>();
-        public List<AStarNode> closeList = new List<AStarNode>();
+        private List<AStarNode> openList = new List<AStarNode>();
+        private List<AStarNode> closeList = new List<AStarNode>();
 
-        [Header("格子宽高")]
-        public int mapW;
-        public int mapH;
+        private int mapW;
+        private int mapH;
+
+        private List<AStarNode> returnNodes = new List<AStarNode>();
 
         public void InitMap(int curW, int curH)
         {
@@ -56,16 +57,6 @@ namespace Example_AStar
                     nodes[i, j] = starNode;
                 }
             }
-
-
-
-            for (int i = 0; i < nodes.GetLength(0); i++)
-            {
-                for (int j = 0; j < nodes.GetLength(1); j++)
-                {
-                    Debug.LogError(nodes[i, j].name);
-                }
-            }
         }
 
         public List<AStarNode> FindPath(AStarNode startNode, AStarNode endNode)
@@ -79,6 +70,7 @@ namespace Example_AStar
             //初始化数据
             openList.Clear();
             closeList.Clear();
+            returnNodes.Clear();
 
             //将起点放进关闭列表中
             closeList.Add(startNode);
@@ -111,12 +103,15 @@ namespace Example_AStar
                 //判断这个点 是否和终点吻合
                 if (startNode == endNode)
                 {
-                    for (int i = 0; i < closeList.Count; i++)
+                    returnNodes.Add(endNode);
+                    while(endNode.parentNode != null)
                     {
-                        Debug.LogError(closeList[i].name);
+                        Debug.Log("加入节点 = " + endNode.parentNode.name);
+                        returnNodes.Add(endNode.parentNode);
+                        endNode = endNode.parentNode;
                     }
-                    //closeList.Reverse(); //翻转后 从开始到结束的点排序
-                    return closeList;
+                    returnNodes.Reverse(); //翻转后 从开始到结束的点排序
+                    return returnNodes;
                 }
             }
         }

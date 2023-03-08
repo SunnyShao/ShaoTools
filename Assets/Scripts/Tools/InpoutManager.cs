@@ -14,6 +14,7 @@ public class InputManager : SingletonBehaviour<InputManager>
 
     protected override void OnDelete()
     {
+        UnityEngine.Debug.Log("InputManager OnDelete");
         Controller.Disable();
         base.OnDelete();
     }
