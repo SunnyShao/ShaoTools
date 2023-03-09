@@ -89,7 +89,7 @@ namespace Example_AStar
         {
             if (m_SelectNodes == null)
                 return;
-
+            
             for (int i = 0; i < m_SelectNodes.Count; i++)
             {
                 if (isReset)

@@ -37,6 +37,8 @@ public class Example_InputSystemDemo : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (InputManager.Instance == null)
+            return;
         InputManager.Instance.Controller.UI.Press.started -= OnPressStarted;
         InputManager.Instance.Controller.UI.Press.canceled -= OnPressCanceled;
         InputManager.Instance.Controller.UI.Press.performed -= OnPressPerformed;
