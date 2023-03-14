@@ -1,14 +1,32 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class Example_CardPwd : MonoBehaviour
+[Serializable]
+public class RequestMsg
+{
+    public string msg;
+    public int code;
+    public RequestData data;
+    public long timestamp;
+}
+
+[Serializable]
+public class RequestData
+{
+    public long timeRemain;
+    public long expAt;
+    public int status;
+}
+
+public class Example_UnityWebRequest : MonoBehaviour
 {
     private string headUrl = "";
     private string head = "http://{0}:{1}";
     private string ip = "120.53.248.67";
     private string port = "8180";
-    private string activeUrl = "/capi/card/valid?cardId=cardkey4";
+    private string activeUrl = "/capi/card/valid?cardId={0}";
     private string verifyUrl = "/capi/card/active?cardId=cardkey9&secret=12345678901234561&dvcKey=1112222";
 
     private string active_CardId = "cardkey4";
@@ -20,37 +38,35 @@ public class Example_CardPwd : MonoBehaviour
     void Start()
     {
         headUrl = string.Format(head, ip, port);
+        activeUrl = string.Format(activeUrl, active_CardId);
         StartCoroutine(GetMsg(headUrl + activeUrl));
-        //StartCoroutine(GetJsonMsg(headUrl + activeUrl));
         //StartCoroutine(PostMsg(headUrl + activeUrl));
     }
 
     IEnumerator GetMsg(string url)
     {
-        Debug.LogError(url);
-        //UnityWebRequest unityWebRequest = new UnityWebRequest(url);
+        Debug.Log("地址为 = " + url);
         UnityWebRequest unityWebRequest = UnityWebRequest.Get(url);
-        //yield return unityWebRequest.downloadHandler;
         yield return unityWebRequest.SendWebRequest();
-        Debug.LogError("结果 = " + unityWebRequest.result);
-        if (unityWebRequest.result == UnityWebRequest.Result.Success)
+        if (unityWebRequest.isDone && unityWebRequest.result == UnityWebRequest.Result.Success)
         {
-            Debug.LogError("具体为 = " + unityWebRequest.downloadHandler.text);
-        }
-    }
+            Debug.LogError("具体内容为 = " + unityWebRequest.downloadHandler.text);
 
-    IEnumerator GetJsonMsg(string url)
-    {
-        Debug.LogError(url);
-        //UnityWebRequest unityWebRequest = new UnityWebRequest(url);
-        UnityWebRequest unityWebRequest = UnityWebRequest.Get(url);
-        //yield return unityWebRequest.downloadHandler;
-        unityWebRequest.SetRequestHeader("Content-Type", "application/json");
-        yield return unityWebRequest.SendWebRequest();
-        Debug.LogError("结果 = " + unityWebRequest.result);
-        if (unityWebRequest.isDone & unityWebRequest.result == UnityWebRequest.Result.Success)
-        {
-            Debug.LogError("具体为 = " + unityWebRequest.downloadHandler.text);
+            //RequestMsg requestMsg = JsonUtility.FromJson<RequestMsg>(unityWebRequest.downloadHandler.text);
+            //Debug.Log(requestMsg.msg);
+            //Debug.Log(requestMsg.code);
+            //Debug.Log(requestMsg.data.timeRemain);
+            //Debug.Log(requestMsg.data.expAt);
+            //Debug.Log(requestMsg.data.status);
+            //Debug.Log(requestMsg.timestamp);
+
+            RequestMsg requestMsg = Newtonsoft.Json.JsonConvert.DeserializeObject<RequestMsg>(unityWebRequest.downloadHandler.text);
+            Debug.Log(requestMsg.msg);
+            Debug.Log(requestMsg.code);
+            Debug.Log(requestMsg.data.timeRemain);
+            Debug.Log(requestMsg.data.expAt);
+            Debug.Log(requestMsg.data.status);
+            Debug.Log(requestMsg.timestamp);
         }
     }
 
@@ -61,6 +77,7 @@ public class Example_CardPwd : MonoBehaviour
         form.AddField("cardId", "cardkey4");
         //请求链接，并将form对象发送到远程服务器
         UnityWebRequest webRequest = UnityWebRequest.Post(headUrl + "/capi/card/valid", form);
+        webRequest.SetRequestHeader("Content-Type", "application/json");
         Debug.Log("地址为 = " + webRequest.url);
         yield return webRequest.SendWebRequest();
         Debug.Log("结果为 = " + webRequest.result);
