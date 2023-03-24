@@ -1,9 +1,9 @@
 {
-    "m_SelectedDeviceId": "77f9ca14",
+    "m_SelectedDeviceId": "TNLDU21106000664",
     "m_SelectedPackage": {
-        "deviceId": "77f9ca14",
+        "deviceId": "TNLDU21106000664",
         "name": "com.taurus.tools",
-        "processId": 32269,
+        "processId": 15739,
         "exited": false
     },
     "m_SelectedPriority": 0,
@@ -132,6 +132,36 @@
             "deviceId": "LKN5T18B09003406",
             "name": "com.ShaoTools.ShaoTools",
             "processId": 15271,
+            "exited": false
+        },
+        {
+            "deviceId": "TNLDU21106000664",
+            "name": "com.gyyx.zoids",
+            "processId": 21530,
+            "exited": true
+        },
+        {
+            "deviceId": "TNLDU21106000664",
+            "name": "com.gyyx.zoids",
+            "processId": 22595,
+            "exited": true
+        },
+        {
+            "deviceId": "TNLDU21106000664",
+            "name": "com.gyyx.zoids",
+            "processId": 27055,
+            "exited": true
+        },
+        {
+            "deviceId": "TNLDU21106000664",
+            "name": "com.gyyx.zoids",
+            "processId": 28302,
+            "exited": true
+        },
+        {
+            "deviceId": "TNLDU21106000664",
+            "name": "com.taurus.tools",
+            "processId": 15739,
             "exited": false
         }
     ],
