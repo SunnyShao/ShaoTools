@@ -2,4 +2,5 @@
 个人工具项目
 
 test commit
-test
+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
+git remote set-url origin https://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@github.com/SunnyShao/ShaoTools.git
