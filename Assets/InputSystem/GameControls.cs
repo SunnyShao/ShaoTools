@@ -53,6 +53,24 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""LeftMove"",
+                    ""type"": ""Button"",
+                    ""id"": ""15da0210-ac54-4fad-9d2e-9961fb4312f4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RightMove"",
+                    ""type"": ""Button"",
+                    ""id"": ""01e86d19-8f28-4c58-acdd-ecbd2cd5873b"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -141,6 +159,28 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""FlyBtn"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d90180ed-d0ca-4231-ab00-911471f182cb"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LeftMove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5ed6245c-f207-430b-a32c-0fe49bf72a3b"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RightMove"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -354,6 +394,8 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
         m_Player_FlyBtn = m_Player.FindAction("FlyBtn", throwIfNotFound: true);
+        m_Player_LeftMove = m_Player.FindAction("LeftMove", throwIfNotFound: true);
+        m_Player_RightMove = m_Player.FindAction("RightMove", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_TouchScreen = m_UI.FindAction("TouchScreen", throwIfNotFound: true);
@@ -427,6 +469,8 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Move;
     private readonly InputAction m_Player_Jump;
     private readonly InputAction m_Player_FlyBtn;
+    private readonly InputAction m_Player_LeftMove;
+    private readonly InputAction m_Player_RightMove;
     public struct PlayerActions
     {
         private @GameControls m_Wrapper;
@@ -434,6 +478,8 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
         public InputAction @Move => m_Wrapper.m_Player_Move;
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
         public InputAction @FlyBtn => m_Wrapper.m_Player_FlyBtn;
+        public InputAction @LeftMove => m_Wrapper.m_Player_LeftMove;
+        public InputAction @RightMove => m_Wrapper.m_Player_RightMove;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -452,6 +498,12 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                 @FlyBtn.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFlyBtn;
                 @FlyBtn.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFlyBtn;
                 @FlyBtn.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFlyBtn;
+                @LeftMove.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLeftMove;
+                @LeftMove.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLeftMove;
+                @LeftMove.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLeftMove;
+                @RightMove.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRightMove;
+                @RightMove.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRightMove;
+                @RightMove.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRightMove;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -465,6 +517,12 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                 @FlyBtn.started += instance.OnFlyBtn;
                 @FlyBtn.performed += instance.OnFlyBtn;
                 @FlyBtn.canceled += instance.OnFlyBtn;
+                @LeftMove.started += instance.OnLeftMove;
+                @LeftMove.performed += instance.OnLeftMove;
+                @LeftMove.canceled += instance.OnLeftMove;
+                @RightMove.started += instance.OnRightMove;
+                @RightMove.performed += instance.OnRightMove;
+                @RightMove.canceled += instance.OnRightMove;
             }
         }
     }
@@ -580,6 +638,8 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
         void OnMove(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnFlyBtn(InputAction.CallbackContext context);
+        void OnLeftMove(InputAction.CallbackContext context);
+        void OnRightMove(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

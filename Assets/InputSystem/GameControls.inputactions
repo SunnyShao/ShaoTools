@@ -31,6 +31,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "LeftMove",
+                    "type": "Button",
+                    "id": "15da0210-ac54-4fad-9d2e-9961fb4312f4",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RightMove",
+                    "type": "Button",
+                    "id": "01e86d19-8f28-4c58-acdd-ecbd2cd5873b",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -119,6 +137,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "FlyBtn",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d90180ed-d0ca-4231-ab00-911471f182cb",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LeftMove",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5ed6245c-f207-430b-a32c-0fe49bf72a3b",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RightMove",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
