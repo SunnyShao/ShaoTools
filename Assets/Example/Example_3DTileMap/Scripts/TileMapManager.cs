@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.WSA;
 
 public class TileMapManager : SingletonBehaviour<TileMapManager>
 {
-    public Tilemap curTimeMap;
+    public Tilemap curTileMap;
 
     // Start is called before the first frame update
     void Start()
@@ -36,29 +37,36 @@ public class TileMapManager : SingletonBehaviour<TileMapManager>
         var cellPos = GetCellPosByWorldPos(worldPos);
         return GetWorldPosByCellPos(cellPos);
     }
-    
+
     // 获得当前世界坐标对应的格子坐标
     public Vector3Int GetCellPosByWorldPos(Vector3 worldPos)
     {
-       return curTimeMap.WorldToCell(worldPos);
+        return curTileMap.WorldToCell(worldPos);
     }
 
     // 获得当前格子坐标对应的世界坐标
     public Vector3 GetWorldPosByCellPos(Vector3Int cellPos)
     {
-       return curTimeMap.CellToWorld(cellPos);
+        return curTileMap.CellToWorld(cellPos);
     }
 
     // 获得当前格子坐标对应的世界坐标(配合主角坐标偏移)
     public Vector3 GetWorldPosByCellPosWithOffest(Vector3Int cellPos)
     {
-       return curTimeMap.CellToLocalInterpolated(cellPos + new Vector3(0.5f, 1f));
+        return curTileMap.CellToLocalInterpolated(cellPos + new Vector3(0.5f, 1f));
     }
 
     // 通过格子坐标判断当前位置是否存在格子数据
     public bool IsCellDataByCellPos(Vector3Int cellPos)
     {
-        TileBase tile = curTimeMap.GetTile(cellPos);
+        TileBase tile = curTileMap.GetTile(cellPos);
         return tile == null;
+    }
+
+    // 删除格子
+    public void DeleteCell(Vector3Int cellPos)
+    {
+        if (curTileMap.GetTile(cellPos) != null)
+            curTileMap.SetTile(cellPos, null);
     }
 }

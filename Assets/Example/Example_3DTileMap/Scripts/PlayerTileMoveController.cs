@@ -18,11 +18,15 @@ public class PlayerTileMoveController : MonoBehaviour
     private bool isMove;
     // 本地移动目标点
     private Vector3 targetPos;
+    // 角色模型偏移值
+    private Vector3 playerOffestPos = new Vector3(1.5f, 1.5f, 0f);
 
-    private Vector3 playerOffestPos = new Vector3(1.5f, 3f, 0f);
+    private Rigidbody rigidbody;
 
     private void Awake()
     {
+        rigidbody = GetComponent<Rigidbody>();
+
         // 设置出生点
         Vector3 bornCellPos = TileMapManager.Instance.GetWorldPosByWorldPos(bornTrans.position);
         transform.position = bornCellPos + playerOffestPos;
@@ -34,7 +38,11 @@ public class PlayerTileMoveController : MonoBehaviour
     {
         if (isMove) return;
         isMove = true;
-        targetPos = TileMapManager.Instance.GetWorldPosByCellPos(new Vector3Int(cellPos.x - 1, cellPos.y, 0));
+
+        Vector3Int targetCellPos = new Vector3Int(cellPos.x - 1, cellPos.y, 0);
+        TileMapManager.Instance.DeleteCell(targetCellPos);
+
+        targetPos = TileMapManager.Instance.GetWorldPosByCellPos(targetCellPos);
         cellPos = TileMapManager.Instance.GetCellPosByWorldPos(targetPos);
         targetPos += playerOffestPos;
         Debug.Log(transform.position + "向左移动目标点 = " + targetPos);
@@ -44,7 +52,10 @@ public class PlayerTileMoveController : MonoBehaviour
     {
         if (isMove) return;
         isMove = true;
-        targetPos = TileMapManager.Instance.GetWorldPosByCellPos(new Vector3Int(cellPos.x + 1, cellPos.y, 0));
+        Vector3Int targetCellPos = new Vector3Int(cellPos.x + 1, cellPos.y, 0);
+        TileMapManager.Instance.DeleteCell(targetCellPos);
+
+        targetPos = TileMapManager.Instance.GetWorldPosByCellPos(targetCellPos);
         cellPos = TileMapManager.Instance.GetCellPosByWorldPos(targetPos);
         targetPos += playerOffestPos;
         Debug.Log(transform.position + "向右移动目标点 = " + targetPos);
@@ -54,10 +65,20 @@ public class PlayerTileMoveController : MonoBehaviour
     {
         if (isMove) return;
         isMove = true;
-        targetPos = TileMapManager.Instance.GetWorldPosByCellPos(new Vector3Int(cellPos.x, cellPos.y - 1, 0));
+        Vector3Int targetCellPos = new Vector3Int(cellPos.x, cellPos.y - 1, 0);
+        TileMapManager.Instance.DeleteCell(targetCellPos);
+
+        targetPos = TileMapManager.Instance.GetWorldPosByCellPos(targetCellPos);
         cellPos = TileMapManager.Instance.GetCellPosByWorldPos(targetPos);
         targetPos += playerOffestPos;
         Debug.Log(transform.position + "向下移动目标点 = " + targetPos);
+    }
+
+    public void OnPlayerTopMove()
+    {
+        if (isMove) return;
+
+        rigidbody.isKinematic = false;
     }
 
     public void ClearMove()
@@ -73,7 +94,7 @@ public class PlayerTileMoveController : MonoBehaviour
             float step = moveSpeed * Time.deltaTime;
             transform.localPosition = Vector3.MoveTowards(transform.localPosition, targetPos, step);
 
-            if(Vector3.Distance(transform.localPosition, targetPos) < 0.01f)
+            if (Vector3.Distance(transform.localPosition, targetPos) < 0.01f)
             {
                 ClearMove();
             }
