@@ -27,7 +27,7 @@ public class PlayerTileMoveController : MonoBehaviour
     // 是否在地面
     private bool isGround = true;
     // 是否飞行中
-    private bool isFly = true;
+    private bool isFly = false;
     // 本地移动目标点
     private Vector3 targetPos;
     // 角色模型偏移值
@@ -43,10 +43,12 @@ public class PlayerTileMoveController : MonoBehaviour
     private void Awake()
     {
         rigidbody = GetComponent<Rigidbody>();
+        rigidbody.useGravity = false;
         targetCellPos = Vector3Int.zero;
         targetMoveDir = Vector3Int.zero;
         isMove = false;
         isGround = true;
+        isFly = false;
 
         // 设置出生点
         Vector3 bornCellPos = TileMapManager.Instance.GetWorldPosByWorldPos(bornTrans.position);
@@ -80,7 +82,6 @@ public class PlayerTileMoveController : MonoBehaviour
 
     private void OnDownMoveCanceled(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
-        Debug.LogError("OnDownMoveCanceled");
         targetMoveDir = Vector3Int.zero;
         targetCellPos = Vector3Int.zero;
     }
@@ -99,7 +100,6 @@ public class PlayerTileMoveController : MonoBehaviour
 
     private void OnRightMoveCanceled(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
-        Debug.LogError("OnRightMoveCanceled");
         targetMoveDir = Vector3Int.zero;
         targetCellPos = Vector3Int.zero;
     }
@@ -118,7 +118,6 @@ public class PlayerTileMoveController : MonoBehaviour
 
     private void OnLeftMoveCanceled(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
-        Debug.LogError("OnLeftMoveCanceled");
         targetMoveDir = Vector3Int.zero;
         targetCellPos = Vector3Int.zero;
     }
@@ -148,11 +147,13 @@ public class PlayerTileMoveController : MonoBehaviour
 
         //rigidbody.isKinematic = false;
         isGround = false;
-
+        isFly = true;
+        rigidbody.useGravity = true;
     }
 
     private void OnFlyCanceled(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
+        isFly = false;
         //Debug.LogError("OnFlyCanceled");
         //rigidbody.isKinematic = true;
         //isGround = true;
@@ -170,7 +171,6 @@ public class PlayerTileMoveController : MonoBehaviour
             input_Y = input_Y * 0.7f;
         }
         input_MoveDir = new Vector2(input_X, input_Y);
-        Debug.LogError(input_MoveDir);
     }
 
     private void OnMoveCanceled(UnityEngine.InputSystem.InputAction.CallbackContext obj)
@@ -184,7 +184,7 @@ public class PlayerTileMoveController : MonoBehaviour
     {
         if (isMove)
         {
-            //Debug.LogError("目标点 + " + targetPos);
+            Debug.LogError("目标点 + " + targetPos);
             float step = moveSpeed * Time.deltaTime;
             transform.localPosition = Vector3.MoveTowards(transform.localPosition, targetPos, step);
 
@@ -198,23 +198,42 @@ public class PlayerTileMoveController : MonoBehaviour
         {
             rigidbody.AddForce(input_MoveDir * flySpeed * Time.deltaTime, ForceMode.Force);
             cellPos = TileMapManager.Instance.GetCellPosByWorldPos(transform.position);
+
+            if (!isFly)
+                CheckPlayerIsGround();
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    // 检测角色是否在地面
+    private void CheckPlayerIsGround()
     {
-        if (other.CompareTag("3DTiles"))
+        if (Physics.Raycast(transform.position, Vector3.down, out var hitInfo, 2f, 1 << LayerMask.NameToLayer("Ground")))
         {
-            Debug.LogError("到地面了 触碰到= " + other.gameObject.name);
+            Debug.LogError("到地面了 触碰到= " + hitInfo.transform.name);
             isGround = true;
+            rigidbody.useGravity = false;
             cellPos = TileMapManager.Instance.GetCellPosByWorldPos(transform.position);
         }
+        else
+        {
+            Debug.LogError("脚下没有东西 = " + cellPos);
+            isGround = false;
+            rigidbody.useGravity = true;
+            cellPos = TileMapManager.Instance.GetCellPosByWorldPos(transform.position);
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawRay(transform.position, Vector3.down * 2f);
     }
 
     public void ClearMove()
     {
         isMove = false;
         targetPos = Vector3.zero;
+        CheckPlayerIsGround();
 
         Debug.LogError($"当前 targetCellPos = {targetCellPos} targetMoveDir = {targetMoveDir}");
         if (targetMoveDir != Vector3Int.zero)

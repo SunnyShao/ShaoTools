@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3898887755819390637}
   - component: {fileID: 3898887755819390643}
   - component: {fileID: 3898887755819390636}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Arrow (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -93,8 +93,7 @@ GameObject:
   - component: {fileID: 7345216948402709714}
   - component: {fileID: 7345216948402709715}
   - component: {fileID: 3824168487089653608}
-  - component: {fileID: 7268478691655910176}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: MiddleRight
   m_TagString: 3DTiles
   m_Icon: {fileID: 0}
@@ -179,19 +178,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!65 &7268478691655910176
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7345216948402709725}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.6, y: 0.01, z: 0.6}
-  m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!1 &7345216948470811456
 GameObject:
   m_ObjectHideFlags: 0
@@ -203,7 +189,7 @@ GameObject:
   - component: {fileID: 7345216948470811463}
   - component: {fileID: 7345216948470811460}
   - component: {fileID: 7345216948470811461}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Arrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
