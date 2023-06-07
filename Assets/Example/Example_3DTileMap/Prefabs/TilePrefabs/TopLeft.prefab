@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4591162307965084807}
   - component: {fileID: 4591162307965084825}
   - component: {fileID: 4591162307965084806}
+  - component: {fileID: 642620587}
   m_Layer: 7
   m_Name: Arrow (1)
   m_TagString: Untagged
@@ -81,6 +82,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &642620587
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4591162307965084804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51f5d1bd9292c364cae7ea869c1ba327, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseColor: {r: 0, g: 0.3540876, b: 1, a: 1}
 --- !u!1 &7801298809167804778
 GameObject:
   m_ObjectHideFlags: 0
@@ -92,6 +106,7 @@ GameObject:
   - component: {fileID: 7801298809167804781}
   - component: {fileID: 7801298809167804782}
   - component: {fileID: 7801298809167804783}
+  - component: {fileID: 479343843}
   m_Layer: 7
   m_Name: Arrow
   m_TagString: Untagged
@@ -162,6 +177,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &479343843
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7801298809167804778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51f5d1bd9292c364cae7ea869c1ba327, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseColor: {r: 0, g: 0.3540876, b: 1, a: 1}
 --- !u!1 &7801298809642751735
 GameObject:
   m_ObjectHideFlags: 0
@@ -174,6 +202,7 @@ GameObject:
   - component: {fileID: 7801298809642751736}
   - component: {fileID: 7801298809642751737}
   - component: {fileID: 4377104047546512706}
+  - component: {fileID: 6224207326334393309}
   m_Layer: 7
   m_Name: TopLeft
   m_TagString: 3DTiles
@@ -204,7 +233,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7801298809642751735}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 5060444177187149915, guid: 302852c8e30f4e04dbe5ca10a898ad43, type: 3}
 --- !u!23 &7801298809642751737
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -259,3 +288,16 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6224207326334393309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7801298809642751735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51f5d1bd9292c364cae7ea869c1ba327, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseColor: {r: 1, g: 0, b: 0, a: 1}

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2070728633769907519}
   - component: {fileID: 2070728633769907489}
   - component: {fileID: 2070728633769907518}
+  - component: {fileID: 1529751373}
   m_Layer: 7
   m_Name: Arrow (1)
   m_TagString: Untagged
@@ -81,6 +82,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &1529751373
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2070728633769907516}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51f5d1bd9292c364cae7ea869c1ba327, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseColor: {r: 0, g: 0.3540876, b: 1, a: 1}
 --- !u!1 &5712928950826641231
 GameObject:
   m_ObjectHideFlags: 0
@@ -93,6 +107,7 @@ GameObject:
   - component: {fileID: 5712928950826641216}
   - component: {fileID: 5712928950826641217}
   - component: {fileID: 2284795622115575034}
+  - component: {fileID: 8178165745692542038}
   m_Layer: 7
   m_Name: OnlyLeft
   m_TagString: 3DTiles
@@ -123,7 +138,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5712928950826641231}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 5060444177187149915, guid: 302852c8e30f4e04dbe5ca10a898ad43, type: 3}
 --- !u!23 &5712928950826641217
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -178,6 +193,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &8178165745692542038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5712928950826641231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51f5d1bd9292c364cae7ea869c1ba327, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!1 &5712928951704340690
 GameObject:
   m_ObjectHideFlags: 0
@@ -189,6 +217,7 @@ GameObject:
   - component: {fileID: 5712928951704340693}
   - component: {fileID: 5712928951704340694}
   - component: {fileID: 5712928951704340695}
+  - component: {fileID: 391243807}
   m_Layer: 7
   m_Name: Arrow
   m_TagString: Untagged
@@ -259,3 +288,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &391243807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5712928951704340690}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51f5d1bd9292c364cae7ea869c1ba327, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseColor: {r: 0, g: 0.3540876, b: 1, a: 1}
