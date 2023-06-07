@@ -71,6 +71,15 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""DownMove"",
+                    ""type"": ""Button"",
+                    ""id"": ""8cc25f01-2bae-45f5-946b-38098c562061"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -181,6 +190,17 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""RightMove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6405e6fa-9add-4e84-ae02-821bdcf8f9cf"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DownMove"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -396,6 +416,7 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
         m_Player_FlyBtn = m_Player.FindAction("FlyBtn", throwIfNotFound: true);
         m_Player_LeftMove = m_Player.FindAction("LeftMove", throwIfNotFound: true);
         m_Player_RightMove = m_Player.FindAction("RightMove", throwIfNotFound: true);
+        m_Player_DownMove = m_Player.FindAction("DownMove", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_TouchScreen = m_UI.FindAction("TouchScreen", throwIfNotFound: true);
@@ -471,6 +492,7 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_FlyBtn;
     private readonly InputAction m_Player_LeftMove;
     private readonly InputAction m_Player_RightMove;
+    private readonly InputAction m_Player_DownMove;
     public struct PlayerActions
     {
         private @GameControls m_Wrapper;
@@ -480,6 +502,7 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
         public InputAction @FlyBtn => m_Wrapper.m_Player_FlyBtn;
         public InputAction @LeftMove => m_Wrapper.m_Player_LeftMove;
         public InputAction @RightMove => m_Wrapper.m_Player_RightMove;
+        public InputAction @DownMove => m_Wrapper.m_Player_DownMove;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -504,6 +527,9 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                 @RightMove.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRightMove;
                 @RightMove.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRightMove;
                 @RightMove.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRightMove;
+                @DownMove.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDownMove;
+                @DownMove.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDownMove;
+                @DownMove.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDownMove;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -523,6 +549,9 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
                 @RightMove.started += instance.OnRightMove;
                 @RightMove.performed += instance.OnRightMove;
                 @RightMove.canceled += instance.OnRightMove;
+                @DownMove.started += instance.OnDownMove;
+                @DownMove.performed += instance.OnDownMove;
+                @DownMove.canceled += instance.OnDownMove;
             }
         }
     }
@@ -640,6 +669,7 @@ public partial class @GameControls : IInputActionCollection2, IDisposable
         void OnFlyBtn(InputAction.CallbackContext context);
         void OnLeftMove(InputAction.CallbackContext context);
         void OnRightMove(InputAction.CallbackContext context);
+        void OnDownMove(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

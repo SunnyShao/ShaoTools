@@ -18,6 +18,10 @@ public class PlayerTileMoveController : MonoBehaviour
     [Header("主角当前格子坐标")]
     private Vector3Int cellPos;
 
+    // 本次移动的目标方向
+    private Vector3Int targetMoveDir;
+    // 本次移动的目标点
+    private Vector3Int targetCellPos;
     // 是否移动中
     private bool isMove;
     // 是否在地面
@@ -39,6 +43,8 @@ public class PlayerTileMoveController : MonoBehaviour
     private void Awake()
     {
         rigidbody = GetComponent<Rigidbody>();
+        targetCellPos = Vector3Int.zero;
+        targetMoveDir = Vector3Int.zero;
         isMove = false;
         isGround = true;
 
@@ -50,58 +56,96 @@ public class PlayerTileMoveController : MonoBehaviour
 
         InputManager.Instance.Controller.Player.FlyBtn.started += OnFlyStarted;
         InputManager.Instance.Controller.Player.FlyBtn.canceled += OnFlyCanceled;
+
         InputManager.Instance.Controller.Player.LeftMove.started += OnLeftMoveStarted;
+        InputManager.Instance.Controller.Player.LeftMove.canceled += OnLeftMoveCanceled;
         InputManager.Instance.Controller.Player.RightMove.started += OnRightMoveStarted;
+        InputManager.Instance.Controller.Player.RightMove.canceled += OnRightMoveCanceled;
+        InputManager.Instance.Controller.Player.DownMove.started += OnDownMoveStarted;
+        InputManager.Instance.Controller.Player.DownMove.canceled += OnDownMoveCanceled;
 
         InputManager.Instance.Controller.Player.Move.performed += OnMovePerformed;
         InputManager.Instance.Controller.Player.Move.canceled += OnMoveCanceled;
     }
 
+    private void OnDownMoveStarted(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    {
+        Debug.LogError(isMove + ": OnPlayerBottomMove :" + isGround);
+        if (isMove || !isGround) return;
+
+        targetMoveDir = new Vector3Int(0, -1, 0);
+        targetCellPos = new Vector3Int(cellPos.x, cellPos.y - 1, 0);
+        PlayerMove();
+    }
+
+    private void OnDownMoveCanceled(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    {
+        Debug.LogError("OnDownMoveCanceled");
+        targetMoveDir = Vector3Int.zero;
+        targetCellPos = Vector3Int.zero;
+    }
+
     private void OnRightMoveStarted(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
         if (isMove) return;
-        isMove = true;
 
         if (isGround)
         {
-            Vector3Int targetCellPos = new Vector3Int(cellPos.x + 1, cellPos.y, 0);
-            TileMapManager.Instance.DeleteCell(targetCellPos);
-            targetPos = TileMapManager.Instance.GetWorldPosByCellPos(targetCellPos);
-            cellPos = TileMapManager.Instance.GetCellPosByWorldPos(targetPos);
-            targetPos += playerOffestPos;
-            Debug.Log(cellPos + "::::" + transform.position + "向右移动目标点 = " + targetPos);
+            targetMoveDir = new Vector3Int(1, 0, 0);
+            targetCellPos = new Vector3Int(cellPos.x + 1, cellPos.y, 0);
+            PlayerMove();
         }
-        //else
-        //{
-        //    input_MoveDir = new Vector3(1, input_MoveDir.y, 0);
-        //}
+    }
+
+    private void OnRightMoveCanceled(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    {
+        Debug.LogError("OnRightMoveCanceled");
+        targetMoveDir = Vector3Int.zero;
+        targetCellPos = Vector3Int.zero;
     }
 
     private void OnLeftMoveStarted(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
         if (isMove) return;
-        isMove = true;
 
         if (isGround)
         {
-            Vector3Int targetCellPos = new Vector3Int(cellPos.x - 1, cellPos.y, 0);
-            TileMapManager.Instance.DeleteCell(targetCellPos);
-
-            targetPos = TileMapManager.Instance.GetWorldPosByCellPos(targetCellPos);
-            cellPos = TileMapManager.Instance.GetCellPosByWorldPos(targetPos);
-            targetPos += playerOffestPos;
-            Debug.Log(transform.position + "向左移动目标点 = " + targetPos);
+            targetMoveDir = new Vector3Int(-1, 0, 0);
+            targetCellPos = new Vector3Int(cellPos.x - 1, cellPos.y, 0);
+            PlayerMove();
         }
-        //else
-        //{
-        //    input_MoveDir = new Vector3(-1, input_MoveDir.y, 0);
-        //}
+    }
+
+    private void OnLeftMoveCanceled(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    {
+        Debug.LogError("OnLeftMoveCanceled");
+        targetMoveDir = Vector3Int.zero;
+        targetCellPos = Vector3Int.zero;
+    }
+
+    private void PlayerMove()
+    {
+        isMove = true;
+
+        TileMapManager.Instance.DeleteCell(targetCellPos);
+
+        targetPos = TileMapManager.Instance.GetWorldPosByCellPos(targetCellPos);
+        cellPos = TileMapManager.Instance.GetCellPosByWorldPos(targetPos);
+        targetPos += playerOffestPos;
+        Debug.Log($"当前坐标 {transform.position} 向目标点移动 {targetPos} 目标点格子 {cellPos}");
     }
 
     private void OnFlyStarted(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
-        //Debug.LogError("OnFlyStarted");
+        //如果处在移动中，那么不能飞行
         if (isMove) return;
+
+        //判断头顶是否存在格子，如果存在格子不能开始飞
+        Vector3Int targetFlyCellPos = new Vector3Int(cellPos.x, cellPos.y + 1, 0);
+        bool hasTopCell = TileMapManager.Instance.IsCellDataByCellPos(targetFlyCellPos);
+        Debug.LogError("头顶是否有格子 = " + hasTopCell);
+        if (hasTopCell) return;
+
         //rigidbody.isKinematic = false;
         isGround = false;
 
@@ -136,73 +180,11 @@ public class PlayerTileMoveController : MonoBehaviour
         input_MoveDir = Vector3.zero;
     }
 
-    public void OnPlayerLeftMove()
-    {
-        //if (isMove) return;
-        //isMove = true;
-
-        //if (isGround)
-        //{
-        //    Vector3Int targetCellPos = new Vector3Int(cellPos.x - 1, cellPos.y, 0);
-        //    TileMapManager.Instance.DeleteCell(targetCellPos);
-
-        //    targetPos = TileMapManager.Instance.GetWorldPosByCellPos(targetCellPos);
-        //    cellPos = TileMapManager.Instance.GetCellPosByWorldPos(targetPos);
-        //    targetPos += playerOffestPos;
-        //    Debug.Log(transform.position + "向左移动目标点 = " + targetPos);
-        //}
-        //else
-        //{
-        //    input_MoveDir = new Vector3(-1, input_MoveDir.y, 0);
-        //}
-    }
-
-    public void OnPlayerRightMove()
-    {
-        //if (isMove) return;
-        //isMove = true;
-
-        //if (isGround)
-        //{
-        //    Vector3Int targetCellPos = new Vector3Int(cellPos.x + 1, cellPos.y, 0);
-        //    TileMapManager.Instance.DeleteCell(targetCellPos);
-        //    targetPos = TileMapManager.Instance.GetWorldPosByCellPos(targetCellPos);
-        //    cellPos = TileMapManager.Instance.GetCellPosByWorldPos(targetPos);
-        //    targetPos += playerOffestPos;
-        //    Debug.Log(transform.position + "向右移动目标点 = " + targetPos);
-        //}
-        //else
-        //{
-        //    input_MoveDir = new Vector3(1, input_MoveDir.y, 0);
-        //}
-    }
-
-    public void OnPlayerBottomMove()
-    {
-        Debug.LogError(isMove + ":::" + isGround);
-        if (isMove || !isGround) return;
-
-        isMove = true;
-        Vector3Int targetCellPos = new Vector3Int(cellPos.x, cellPos.y - 1, 0);
-        TileMapManager.Instance.DeleteCell(targetCellPos);
-
-        targetPos = TileMapManager.Instance.GetWorldPosByCellPos(targetCellPos);
-        cellPos = TileMapManager.Instance.GetCellPosByWorldPos(targetPos);
-        targetPos += playerOffestPos;
-        Debug.Log(transform.position + "向下移动目标点 = " + targetPos);
-    }
-
-    public void ClearMove()
-    {
-        isMove = false;
-        targetPos = Vector3.zero;
-    }
-
     private void Update()
     {
         if (isMove)
         {
-            Debug.LogError("目标点 + " + targetPos);
+            //Debug.LogError("目标点 + " + targetPos);
             float step = moveSpeed * Time.deltaTime;
             transform.localPosition = Vector3.MoveTowards(transform.localPosition, targetPos, step);
 
@@ -221,11 +203,24 @@ public class PlayerTileMoveController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("3DTiles"))
+        if (other.CompareTag("3DTiles"))
         {
             Debug.LogError("到地面了 触碰到= " + other.gameObject.name);
             isGround = true;
             cellPos = TileMapManager.Instance.GetCellPosByWorldPos(transform.position);
+        }
+    }
+
+    public void ClearMove()
+    {
+        isMove = false;
+        targetPos = Vector3.zero;
+
+        Debug.LogError($"当前 targetCellPos = {targetCellPos} targetMoveDir = {targetMoveDir}");
+        if (targetMoveDir != Vector3Int.zero)
+        {
+            targetCellPos += targetMoveDir;
+            PlayerMove();
         }
     }
 }

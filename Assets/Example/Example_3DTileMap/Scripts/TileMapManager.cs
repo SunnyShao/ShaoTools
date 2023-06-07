@@ -53,14 +53,14 @@ public class TileMapManager : SingletonBehaviour<TileMapManager>
     // 获得当前格子坐标对应的世界坐标(配合主角坐标偏移)
     public Vector3 GetWorldPosByCellPosWithOffest(Vector3Int cellPos)
     {
-        return curTileMap.CellToLocalInterpolated(cellPos + new Vector3(0.5f, 1f));
+        return curTileMap.CellToLocalInterpolated(cellPos + new Vector3(0.5f, 0.5f));
     }
 
     // 通过格子坐标判断当前位置是否存在格子数据
     public bool IsCellDataByCellPos(Vector3Int cellPos)
     {
         TileBase tile = curTileMap.GetTile(cellPos);
-        return tile == null;
+        return tile != null;
     }
 
     // 删除格子
