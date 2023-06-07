@@ -44,6 +44,7 @@ public class PlayerTileMoveController : MonoBehaviour
     {
         rigidbody = GetComponent<Rigidbody>();
         rigidbody.useGravity = false;
+        rigidbody.isKinematic = true;
         targetCellPos = Vector3Int.zero;
         targetMoveDir = Vector3Int.zero;
         isMove = false;
@@ -124,6 +125,12 @@ public class PlayerTileMoveController : MonoBehaviour
 
     private void PlayerMove()
     {
+        if(CheckPlayerIsWall())
+        {
+            Debug.LogError("触碰到墙");
+            return;
+        }
+
         isMove = true;
 
         TileMapManager.Instance.DeleteCell(targetCellPos);
@@ -142,13 +149,13 @@ public class PlayerTileMoveController : MonoBehaviour
         //判断头顶是否存在格子，如果存在格子不能开始飞
         Vector3Int targetFlyCellPos = new Vector3Int(cellPos.x, cellPos.y + 1, 0);
         bool hasTopCell = TileMapManager.Instance.IsCellDataByCellPos(targetFlyCellPos);
-        Debug.LogError("头顶是否有格子 = " + hasTopCell);
         if (hasTopCell) return;
 
         //rigidbody.isKinematic = false;
         isGround = false;
         isFly = true;
         rigidbody.useGravity = true;
+        rigidbody.isKinematic = false;
     }
 
     private void OnFlyCanceled(UnityEngine.InputSystem.InputAction.CallbackContext obj)
@@ -184,7 +191,7 @@ public class PlayerTileMoveController : MonoBehaviour
     {
         if (isMove)
         {
-            Debug.LogError("目标点 + " + targetPos);
+            //Debug.LogError("目标点 + " + targetPos);
             float step = moveSpeed * Time.deltaTime;
             transform.localPosition = Vector3.MoveTowards(transform.localPosition, targetPos, step);
 
@@ -196,6 +203,7 @@ public class PlayerTileMoveController : MonoBehaviour
 
         if (!isGround)
         {
+            Debug.LogError("空中滑翔 = " + input_MoveDir);
             rigidbody.AddForce(input_MoveDir * flySpeed * Time.deltaTime, ForceMode.Force);
             cellPos = TileMapManager.Instance.GetCellPosByWorldPos(transform.position);
 
@@ -207,26 +215,34 @@ public class PlayerTileMoveController : MonoBehaviour
     // 检测角色是否在地面
     private void CheckPlayerIsGround()
     {
-        if (Physics.Raycast(transform.position, Vector3.down, out var hitInfo, 2f, 1 << LayerMask.NameToLayer("Ground")))
+        if (Physics.Raycast(transform.position, Vector3.down, out var hitInfo, 1.6f, 1 << LayerMask.NameToLayer("Ground")))
         {
             Debug.LogError("到地面了 触碰到= " + hitInfo.transform.name);
             isGround = true;
             rigidbody.useGravity = false;
+            rigidbody.isKinematic = true;
             cellPos = TileMapManager.Instance.GetCellPosByWorldPos(transform.position);
         }
-        else
+        else if(isGround)
         {
             Debug.LogError("脚下没有东西 = " + cellPos);
             isGround = false;
             rigidbody.useGravity = true;
+            rigidbody.isKinematic = false;
             cellPos = TileMapManager.Instance.GetCellPosByWorldPos(transform.position);
         }
     }
 
+    // 检测角色是否碰到墙体
+    private bool CheckPlayerIsWall()
+    {
+        return Physics.Raycast(transform.position, targetMoveDir, 2f, 1 << LayerMask.NameToLayer("Wall"));
+    }
+
     private void OnDrawGizmosSelected()
     {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawRay(transform.position, Vector3.down * 2f);
+        Gizmos.color = Color.red;
+        Gizmos.DrawRay(transform.position, Vector3.down * 1.6f);
     }
 
     public void ClearMove()
@@ -235,7 +251,6 @@ public class PlayerTileMoveController : MonoBehaviour
         targetPos = Vector3.zero;
         CheckPlayerIsGround();
 
-        Debug.LogError($"当前 targetCellPos = {targetCellPos} targetMoveDir = {targetMoveDir}");
         if (targetMoveDir != Vector3Int.zero)
         {
             targetCellPos += targetMoveDir;
