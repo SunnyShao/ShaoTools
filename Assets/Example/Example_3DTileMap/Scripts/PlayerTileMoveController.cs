@@ -43,7 +43,7 @@ public class PlayerTileMoveController : MonoBehaviour
     private void Awake()
     {
         rigidbody = GetComponent<Rigidbody>();
-        rigidbody.useGravity = false;
+        //rigidbody.useGravity = false;
         rigidbody.isKinematic = true;
         targetCellPos = Vector3Int.zero;
         targetMoveDir = Vector3Int.zero;
@@ -73,7 +73,6 @@ public class PlayerTileMoveController : MonoBehaviour
 
     private void OnDownMoveStarted(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
-        Debug.LogError(isMove + ": OnPlayerBottomMove :" + isGround);
         if (isMove || !isGround) return;
 
         targetMoveDir = new Vector3Int(0, -1, 0);
@@ -125,7 +124,7 @@ public class PlayerTileMoveController : MonoBehaviour
 
     private void PlayerMove()
     {
-        if(CheckPlayerIsWall())
+        if (CheckPlayerIsWall())
         {
             Debug.LogError("触碰到墙");
             return;
@@ -154,7 +153,7 @@ public class PlayerTileMoveController : MonoBehaviour
         //rigidbody.isKinematic = false;
         isGround = false;
         isFly = true;
-        rigidbody.useGravity = true;
+        //rigidbody.useGravity = true;
         rigidbody.isKinematic = false;
     }
 
@@ -203,34 +202,41 @@ public class PlayerTileMoveController : MonoBehaviour
 
         if (!isGround)
         {
-            Debug.LogError("空中滑翔 = " + input_MoveDir);
-            rigidbody.AddForce(input_MoveDir * flySpeed * Time.deltaTime, ForceMode.Force);
             cellPos = TileMapManager.Instance.GetCellPosByWorldPos(transform.position);
 
             if (!isFly)
+            {
+                //不在地面，并且没有启动飞行的时候，证明是在下落，要时刻检查角色是否落到地面
                 CheckPlayerIsGround();
+            }
+            else
+            {
+                //不在地面，并且是启动飞行 才会执行刚体施加力逻辑
+                rigidbody.AddForce(input_MoveDir * flySpeed * Time.deltaTime, ForceMode.Force);
+            }
         }
     }
 
     // 检测角色是否在地面
-    private void CheckPlayerIsGround()
+    private bool CheckPlayerIsGround()
     {
         if (Physics.Raycast(transform.position, Vector3.down, out var hitInfo, 1.6f, 1 << LayerMask.NameToLayer("Ground")))
         {
-            Debug.LogError("到地面了 触碰到= " + hitInfo.transform.name);
+            Debug.Log("到地面了 触碰到= " + hitInfo.transform.name);
             isGround = true;
-            rigidbody.useGravity = false;
+            //rigidbody.useGravity = false;
             rigidbody.isKinematic = true;
             cellPos = TileMapManager.Instance.GetCellPosByWorldPos(transform.position);
         }
-        else if(isGround)
+        else if (isGround)
         {
-            Debug.LogError("脚下没有东西 = " + cellPos);
+            Debug.Log("脚下没有东西 = " + cellPos);
             isGround = false;
-            rigidbody.useGravity = true;
+            //rigidbody.useGravity = true;
             rigidbody.isKinematic = false;
             cellPos = TileMapManager.Instance.GetCellPosByWorldPos(transform.position);
         }
+        return isGround;
     }
 
     // 检测角色是否碰到墙体
@@ -249,12 +255,18 @@ public class PlayerTileMoveController : MonoBehaviour
     {
         isMove = false;
         targetPos = Vector3.zero;
-        CheckPlayerIsGround();
-
-        if (targetMoveDir != Vector3Int.zero)
+        if (CheckPlayerIsGround())
         {
-            targetCellPos += targetMoveDir;
-            PlayerMove();
+            if (targetMoveDir != Vector3Int.zero)
+            {
+                targetCellPos += targetMoveDir;
+                PlayerMove();
+            }
+        }
+        else
+        {
+            targetMoveDir = Vector3Int.zero;
+            targetCellPos = Vector3Int.zero;
         }
     }
 }
