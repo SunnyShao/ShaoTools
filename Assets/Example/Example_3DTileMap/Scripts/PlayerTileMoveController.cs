@@ -196,7 +196,7 @@ public class PlayerTileMoveController : MonoBehaviour
 
             if (Vector3.Distance(transform.localPosition, targetPos) < 0.01f)
             {
-                ClearMove();
+                OnMoveOver();
             }
         }
 
@@ -220,9 +220,11 @@ public class PlayerTileMoveController : MonoBehaviour
     // 检测角色是否在地面
     private bool CheckPlayerIsGround()
     {
-        if (Physics.Raycast(transform.position, Vector3.down, out var hitInfo, 1.6f, 1 << LayerMask.NameToLayer("Ground")))
+        // 检测方案二  向脚下发射一个碰撞块判断是否碰到地面
+        var raycastColliders = Physics.OverlapBox(transform.position - new Vector3(0f, 1.5f, 0f), new Vector3(1f, 0.1f, 1f), Quaternion.identity, 1 << LayerMask.NameToLayer("Ground"));
+        if (raycastColliders.Length > 0)
         {
-            Debug.Log("到地面了 触碰到= " + hitInfo.transform.name);
+            Debug.Log(raycastColliders.Length + "到地面了 触碰到= " + raycastColliders[0].name);
             isGround = true;
             //rigidbody.useGravity = false;
             rigidbody.isKinematic = true;
@@ -237,6 +239,25 @@ public class PlayerTileMoveController : MonoBehaviour
             cellPos = TileMapManager.Instance.GetCellPosByWorldPos(transform.position);
         }
         return isGround;
+
+        // 检测方案一  向脚下发射射线判断是否碰到地面(问题在于正好卡在地面边缘射线无法判断)
+        //if (Physics.Raycast(transform.position, Vector3.down, out var hitInfo, 1.6f, 1 << LayerMask.NameToLayer("Ground")))
+        //{
+        //    Debug.Log("到地面了 触碰到= " + hitInfo.transform.name);
+        //    isGround = true;
+        //    //rigidbody.useGravity = false;
+        //    rigidbody.isKinematic = true;
+        //    cellPos = TileMapManager.Instance.GetCellPosByWorldPos(transform.position);
+        //}
+        //else if (isGround)
+        //{
+        //    Debug.Log("脚下没有东西 = " + cellPos);
+        //    isGround = false;
+        //    //rigidbody.useGravity = true;
+        //    rigidbody.isKinematic = false;
+        //    cellPos = TileMapManager.Instance.GetCellPosByWorldPos(transform.position);
+        //}
+        //return isGround;
     }
 
     // 检测角色是否碰到墙体
@@ -247,16 +268,25 @@ public class PlayerTileMoveController : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
+        // 方案一 画线
+        //Gizmos.color = Color.red;
+        //Gizmos.DrawRay(transform.position, Vector3.down * 1.6f);
+
+        // 方案二 画线
         Gizmos.color = Color.red;
-        Gizmos.DrawRay(transform.position, Vector3.down * 1.6f);
+        Gizmos.DrawWireCube(transform.position - new Vector3(0f, 1.5f, 0f), new Vector3(1f, 0.1f, 1f));
     }
 
-    public void ClearMove()
+    // 当移动完成处理
+    public void OnMoveOver()
     {
         isMove = false;
         targetPos = Vector3.zero;
+
+        // 判断本次移动后玩家是否处于地面
         if (CheckPlayerIsGround())
         {
+            // 玩家在地面，并且还在持续按下移动按钮，则继续下一次移动
             if (targetMoveDir != Vector3Int.zero)
             {
                 targetCellPos += targetMoveDir;
