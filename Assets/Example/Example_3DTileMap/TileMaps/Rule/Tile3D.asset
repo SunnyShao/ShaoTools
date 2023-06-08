@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Tile3D
   m_EditorClassIdentifier: 
   m_DefaultSprite: {fileID: -6531166325628585329, guid: 3753b3e8d827245468fb8e17313a7c6b, type: 3}
-  m_DefaultGameObject: {fileID: 6049691251670907998, guid: e2c598370262ce54887f53aafc21d6cf, type: 3}
+  m_DefaultGameObject: {fileID: 889644703217684645, guid: 89199d5ee57e2324882a6a01209f4bbe, type: 3}
   m_DefaultColliderType: 1
   m_TilingRules: []
