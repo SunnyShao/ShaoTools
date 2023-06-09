@@ -2,75 +2,81 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HealthBarCut : MonoBehaviour
+namespace CodeMonkey
 {
-    private const float BAR_WIDTH = 500f;  //血条总宽度上限
-
-    private Image barImage;
-    private Transform damagedBarTemplate;
-    private Button addButton;
-    private Button subtractionButton;
-
-    private HealthSystem healthSystem;
-
-    private void Awake()
+    /// <summary>
+    /// 一段一段掉落的血条
+    /// </summary>
+    public class HealthBarCut : MonoBehaviour
     {
-        barImage = transform.Find("bar").GetComponent<Image>();
-        damagedBarTemplate = transform.Find("damagedBarTemplate");
+        private const float BAR_WIDTH = 500f;  //血条总宽度上限
 
-        addButton = transform.Find("AddButton").GetComponent<Button>();
-        addButton.onClick.AddListener(OnAddButtonClick);
-        subtractionButton = transform.Find("SubtractionButton").GetComponent<Button>();
-        subtractionButton.onClick.AddListener(OnSubtarctionBtnClick);
-    }
+        private Image barImage;
+        private Transform damagedBarTemplate;
+        private Button addButton;
+        private Button subtractionButton;
 
-    private void Start()
-    {
-        healthSystem = new HealthSystem(100);
-        SetHealth(healthSystem.GetHealthNormalized());
-        healthSystem.OnDamaged += HealthSystem_OnDamaged;
-        healthSystem.OnHealed += HealthSystem_OnHealed;
-    }
+        private HealthSystem healthSystem;
 
-    private void HealthSystem_OnHealed(object sender, EventArgs e)
-    {
-        SetHealth(healthSystem.GetHealthNormalized());
-    }
+        private void Awake()
+        {
+            barImage = transform.Find("bar").GetComponent<Image>();
+            damagedBarTemplate = transform.Find("damagedBarTemplate");
 
-    private void HealthSystem_OnDamaged(object sender, EventArgs e)
-    {
-        float beforeHealth = barImage.fillAmount;
-        SetHealth(healthSystem.GetHealthNormalized());
+            addButton = transform.Find("AddButton").GetComponent<Button>();
+            addButton.onClick.AddListener(OnAddButtonClick);
+            subtractionButton = transform.Find("SubtractionButton").GetComponent<Button>();
+            subtractionButton.onClick.AddListener(OnSubtarctionBtnClick);
+        }
 
-        Transform damagedBar = Instantiate(damagedBarTemplate, transform);
-        damagedBar.gameObject.SetActive(true);
-        damagedBar.GetComponent<RectTransform>().anchoredPosition = new Vector2(barImage.fillAmount * BAR_WIDTH, damagedBar.GetComponent<RectTransform>().anchoredPosition.y);
-        damagedBar.GetComponent<Image>().fillAmount = beforeHealth - barImage.fillAmount;
-    }
+        private void Start()
+        {
+            healthSystem = new HealthSystem(100);
+            SetHealth(healthSystem.GetHealthNormalized());
+            healthSystem.OnDamaged += HealthSystem_OnDamaged;
+            healthSystem.OnHealed += HealthSystem_OnHealed;
+        }
 
-    private void SetHealth(float health)
-    {
-        barImage.fillAmount = health;
-    }
+        private void HealthSystem_OnHealed(object sender, EventArgs e)
+        {
+            SetHealth(healthSystem.GetHealthNormalized());
+        }
 
-    private void OnSubtarctionBtnClick()
-    {
-        healthSystem.Damage(10);
-    }
+        private void HealthSystem_OnDamaged(object sender, EventArgs e)
+        {
+            float beforeHealth = barImage.fillAmount;
+            SetHealth(healthSystem.GetHealthNormalized());
 
-    private void OnAddButtonClick()
-    {
-        healthSystem.Heal(10);
-    }
+            Transform damagedBar = Instantiate(damagedBarTemplate, transform);
+            damagedBar.gameObject.SetActive(true);
+            damagedBar.GetComponent<RectTransform>().anchoredPosition = new Vector2(barImage.fillAmount * BAR_WIDTH, damagedBar.GetComponent<RectTransform>().anchoredPosition.y);
+            damagedBar.GetComponent<Image>().fillAmount = beforeHealth - barImage.fillAmount;
+            damagedBar.gameObject.AddComponent<HealthBarCutFallDown>();
+        }
 
-    private void OnDestroy()
-    {
-        Debug.Log(healthSystem == null);
-        healthSystem.OnDamaged -= HealthSystem_OnDamaged;
-        healthSystem.OnHealed -= HealthSystem_OnHealed;
-        healthSystem = null;
+        private void SetHealth(float health)
+        {
+            barImage.fillAmount = health;
+        }
 
-        addButton.onClick.RemoveAllListeners();
-        subtractionButton.onClick.RemoveAllListeners();
+        private void OnSubtarctionBtnClick()
+        {
+            healthSystem.Damage(10);
+        }
+
+        private void OnAddButtonClick()
+        {
+            healthSystem.Heal(10);
+        }
+
+        private void OnDestroy()
+        {
+            healthSystem.OnDamaged -= HealthSystem_OnDamaged;
+            healthSystem.OnHealed -= HealthSystem_OnHealed;
+            healthSystem = null;
+
+            addButton.onClick.RemoveAllListeners();
+            subtractionButton.onClick.RemoveAllListeners();
+        }
     }
 }

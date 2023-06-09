@@ -2,104 +2,110 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HealthBarFade : MonoBehaviour
+namespace CodeMonkey
 {
-    private const float DAMAGED_HEALTH_FADE_TIMER_MAX = 1f;  //渐变计时器上限
-
-    private Image barImage;
-    private Image damagedBarImage;
-    private Button addButton;
-    private Button subtractionButton;
-
-    // 缓存颜色
-    private Color damagedColor;
-
-    //渐变时间 当计时器小于0时，降低alpha值
-    private float damagedHealthFadeTimer;
-
-    private HealthSystem healthSystem;
-
-    private void Awake()
+    /// <summary>
+    /// 血条一段一段的消失
+    /// </summary>
+    public class HealthBarFade : MonoBehaviour
     {
-        barImage = transform.Find("bar").GetComponent<Image>();
-        damagedBarImage = transform.Find("damagedBar").GetComponent<Image>();
+        private const float DAMAGED_HEALTH_FADE_TIMER_MAX = 1f;  //渐变计时器上限
 
-        addButton = transform.Find("AddButton").GetComponent<Button>();
-        addButton.onClick.AddListener(OnAddButtonClick);
-        subtractionButton = transform.Find("SubtractionButton").GetComponent<Button>();
-        subtractionButton.onClick.AddListener(OnSubtarctionBtnClick);
+        private Image barImage;
+        private Image damagedBarImage;
+        private Button addButton;
+        private Button subtractionButton;
 
-        damagedColor = damagedBarImage.color;
-        damagedColor.a = 0f;
-        damagedBarImage.color = damagedColor;
-    }
+        // 缓存颜色
+        private Color damagedColor;
 
-    private void Start()
-    {
-        healthSystem = new HealthSystem(100);
-        SetHealth(healthSystem.GetHealthNormalized());
-        healthSystem.OnDamaged += HealthSystem_OnDamaged;
-        healthSystem.OnHealed += HealthSystem_OnHealed;
-    }
+        //渐变时间 当计时器小于0时，降低alpha值
+        private float damagedHealthFadeTimer;
 
-    private void Update()
-    {
-        // 当受伤进度条显示出来时
-        if (damagedColor.a > 0f)
+        private HealthSystem healthSystem;
+
+        private void Awake()
         {
-            // 受伤进度条显示指定的时间后 受伤进度条渐隐
-            damagedHealthFadeTimer -= Time.deltaTime;
-            if(damagedHealthFadeTimer < 0)
+            barImage = transform.Find("bar").GetComponent<Image>();
+            damagedBarImage = transform.Find("damagedBar").GetComponent<Image>();
+
+            addButton = transform.Find("AddButton").GetComponent<Button>();
+            addButton.onClick.AddListener(OnAddButtonClick);
+            subtractionButton = transform.Find("SubtractionButton").GetComponent<Button>();
+            subtractionButton.onClick.AddListener(OnSubtarctionBtnClick);
+
+            damagedColor = damagedBarImage.color;
+            damagedColor.a = 0f;
+            damagedBarImage.color = damagedColor;
+        }
+
+        private void Start()
+        {
+            healthSystem = new HealthSystem(100);
+            SetHealth(healthSystem.GetHealthNormalized());
+            healthSystem.OnDamaged += HealthSystem_OnDamaged;
+            healthSystem.OnHealed += HealthSystem_OnHealed;
+        }
+
+        private void Update()
+        {
+            // 当受伤进度条显示出来时
+            if (damagedColor.a > 0f)
             {
-                damagedColor.a -= 5f * Time.deltaTime;
-                damagedBarImage.color = damagedColor;
+                // 受伤进度条显示指定的时间后 受伤进度条渐隐
+                damagedHealthFadeTimer -= Time.deltaTime;
+                if (damagedHealthFadeTimer < 0)
+                {
+                    damagedColor.a -= 5f * Time.deltaTime;
+                    damagedBarImage.color = damagedColor;
+                }
             }
         }
-    }
 
-    private void HealthSystem_OnHealed(object sender, EventArgs e)
-    {
-        SetHealth(healthSystem.GetHealthNormalized());
-    }
-
-    private void HealthSystem_OnDamaged(object sender, EventArgs e)
-    {
-        if (damagedColor.a <= 0f)
+        private void HealthSystem_OnHealed(object sender, EventArgs e)
         {
-            //Damage bar Image is invisible
-            damagedBarImage.fillAmount = barImage.fillAmount;
+            SetHealth(healthSystem.GetHealthNormalized());
         }
 
-        damagedColor.a = 1;
-        damagedBarImage.color = damagedColor;
-        damagedHealthFadeTimer = DAMAGED_HEALTH_FADE_TIMER_MAX;
+        private void HealthSystem_OnDamaged(object sender, EventArgs e)
+        {
+            if (damagedColor.a <= 0f)
+            {
+                //Damage bar Image is invisible
+                damagedBarImage.fillAmount = barImage.fillAmount;
+            }
 
-        SetHealth(healthSystem.GetHealthNormalized());
-    }
+            damagedColor.a = 1;
+            damagedBarImage.color = damagedColor;
+            damagedHealthFadeTimer = DAMAGED_HEALTH_FADE_TIMER_MAX;
 
-    private void SetHealth(float health)
-    {
-        barImage.fillAmount = health;
-    }
+            SetHealth(healthSystem.GetHealthNormalized());
+        }
 
-    private void OnSubtarctionBtnClick()
-    {
-        healthSystem.Damage(10);
-    }
+        private void SetHealth(float health)
+        {
+            barImage.fillAmount = health;
+        }
 
-    private void OnAddButtonClick()
-    {
-        healthSystem.Heal(10);
-    }
+        private void OnSubtarctionBtnClick()
+        {
+            healthSystem.Damage(10);
+        }
 
-    private void OnDestroy()
-    {
-        Debug.Log(healthSystem == null);
-        healthSystem.OnDamaged -= HealthSystem_OnDamaged;
-        healthSystem.OnHealed -= HealthSystem_OnHealed;
-        healthSystem = null;
+        private void OnAddButtonClick()
+        {
+            healthSystem.Heal(10);
+        }
 
-        addButton.onClick.RemoveAllListeners();
-        subtractionButton.onClick.RemoveAllListeners();
+        private void OnDestroy()
+        {
+            Debug.Log(healthSystem == null);
+            healthSystem.OnDamaged -= HealthSystem_OnDamaged;
+            healthSystem.OnHealed -= HealthSystem_OnHealed;
+            healthSystem = null;
+
+            addButton.onClick.RemoveAllListeners();
+            subtractionButton.onClick.RemoveAllListeners();
+        }
     }
 }
