@@ -4,23 +4,19 @@ using UnityEngine.UI;
 
 public class HealthBarCut : MonoBehaviour
 {
-    private const float DAMAGED_HEALTH_SHRINK_TIMER_MAX = 1f;  //渐变计时器上限
+    private const float BAR_WIDTH = 500f;  //血条总宽度上限
 
     private Image barImage;
-    private Image damagedBarImage;
+    private Transform damagedBarTemplate;
     private Button addButton;
     private Button subtractionButton;
-
-    //渐变时间 当计时器小于0时，降低alpha值
-    private float damagedHealthShrinkTimer;
 
     private HealthSystem healthSystem;
 
     private void Awake()
     {
         barImage = transform.Find("bar").GetComponent<Image>();
-        damagedBarImage = transform.Find("damagedBar").GetComponent<Image>();
-        damagedBarImage.fillAmount = 1f;
+        damagedBarTemplate = transform.Find("damagedBarTemplate");
 
         addButton = transform.Find("AddButton").GetComponent<Button>();
         addButton.onClick.AddListener(OnAddButtonClick);
@@ -36,30 +32,20 @@ public class HealthBarCut : MonoBehaviour
         healthSystem.OnHealed += HealthSystem_OnHealed;
     }
 
-    private void Update()
-    {
-        damagedHealthShrinkTimer -= Time.deltaTime;
-        if (damagedHealthShrinkTimer < 0)
-        {
-            if (barImage.fillAmount < damagedBarImage.fillAmount)
-            {
-                damagedBarImage.fillAmount -= 1f * Time.deltaTime;
-            }
-        }
-    }
-
     private void HealthSystem_OnHealed(object sender, EventArgs e)
     {
-        damagedBarImage.fillAmount = healthSystem.GetHealthNormalized();
-
         SetHealth(healthSystem.GetHealthNormalized());
     }
 
     private void HealthSystem_OnDamaged(object sender, EventArgs e)
     {
-        damagedHealthShrinkTimer = DAMAGED_HEALTH_SHRINK_TIMER_MAX;
-
+        float beforeHealth = barImage.fillAmount;
         SetHealth(healthSystem.GetHealthNormalized());
+
+        Transform damagedBar = Instantiate(damagedBarTemplate, transform);
+        damagedBar.gameObject.SetActive(true);
+        damagedBar.GetComponent<RectTransform>().anchoredPosition = new Vector2(barImage.fillAmount * BAR_WIDTH, damagedBar.GetComponent<RectTransform>().anchoredPosition.y);
+        damagedBar.GetComponent<Image>().fillAmount = beforeHealth - barImage.fillAmount;
     }
 
     private void SetHealth(float health)
