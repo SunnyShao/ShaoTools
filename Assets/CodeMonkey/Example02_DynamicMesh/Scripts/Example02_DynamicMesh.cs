@@ -75,7 +75,7 @@ public class Example02_DynamicMesh : MonoBehaviour
         Mesh mesh = new Mesh();
         mesh.name = "CreateTileMesh";
 
-        #region 绘制四边形
+        #region 绘制四边形 
         int width = 4;          //想要绘制的宽
         int height = 4;         //想要绘制的高
         float tileSize = 10;    //格子大小
@@ -99,7 +99,7 @@ public class Example02_DynamicMesh : MonoBehaviour
                 uv[index * 4 + 2] = new Vector2(1, 1);
                 uv[index * 4 + 3] = new Vector2(1, 0);
 
-                triangles[index * 6 + 0] = index * 4+ 0;
+                triangles[index * 6 + 0] = index * 4 + 0;
                 triangles[index * 6 + 1] = index * 4 + 1;
                 triangles[index * 6 + 2] = index * 4 + 2;
 
