@@ -20,7 +20,7 @@ public class DragWindows : MonoBehaviour, IDragHandler, IPointerDownHandler
         }
 
         if (m_Canvas == null)
-        {
+        {   
             Transform trans = transform.parent;
             while (trans != null)
             {
