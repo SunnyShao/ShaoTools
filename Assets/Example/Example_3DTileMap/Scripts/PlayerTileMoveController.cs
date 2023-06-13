@@ -3,7 +3,7 @@ using UnityEngine;
 public class PlayerTileMoveController : MonoBehaviour
 {
     [Header("出生点")]
-    public Transform bornTrans;
+    public Vector3Int bornPos;
 
     [Header("主角移速")]
     public float moveSpeed;
@@ -48,7 +48,7 @@ public class PlayerTileMoveController : MonoBehaviour
         isFly = false;
 
         // 设置出生点
-        Vector3 bornCellPos = TileMapManager.Instance.GetWorldPosByWorldPos(bornTrans.position);
+        Vector3 bornCellPos = TileMapManager.Instance.GetWorldPosByCellPos(bornPos);
         transform.position = bornCellPos + playerOffestPos;
         // 获得当前主角对应格子数据
         cellPos = TileMapManager.Instance.GetCellPosByWorldPos(bornCellPos);
