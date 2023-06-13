@@ -634,7 +634,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 186295783}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 47, y: 130, z: 0}
+  m_LocalPosition: {x: 47, y: 140, z: 0}
   m_LocalScale: {x: 120, y: 1, z: 10}
   m_Children: []
   m_Father: {fileID: 8908869}
@@ -660,7 +660,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 186295783}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -14476,7 +14476,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0350a31b39d538e4784c72f3d3199708, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bornTrans: {fileID: 984291444}
   bornPos: {x: 3, y: 40, z: 0}
   moveSpeed: 10
   flySpeed: 100
@@ -18013,8 +18012,9 @@ MonoBehaviour:
   updateMode: 1
   curTileMap: {fileID: 350046241}
   curTileBase: {fileID: 11400000, guid: dc1f16320c4e2ea4cbe8a847bea25633, type: 2}
-  height: 30
-  width: 40
+  height_Bounds: 43
+  height: 40
+  width: 30
 --- !u!4 &1754488078
 Transform:
   m_ObjectHideFlags: 0

@@ -216,6 +216,8 @@ public class PlayerTileMoveController : MonoBehaviour
     // 检测角色是否在地面
     private bool CheckPlayerIsGround()
     {
+        cellPos = TileMapManager.Instance.GetCellPosByWorldPos(transform.position);
+
         // 检测方案二  向脚下发射一个碰撞块判断是否碰到地面
         var raycastColliders = Physics.OverlapBox(transform.position - new Vector3(0f, 1.5f, 0f), new Vector3(1f, 0.1f, 1f), Quaternion.identity, 1 << LayerMask.NameToLayer("Ground"));
         if (raycastColliders.Length > 0)
@@ -224,15 +226,26 @@ public class PlayerTileMoveController : MonoBehaviour
             isGround = true;
             //rigidbody.useGravity = false;
             rigidbody.isKinematic = true;
-            cellPos = TileMapManager.Instance.GetCellPosByWorldPos(transform.position);
+
         }
+        else if(CheckPlayerIsWall())
+        {
+            Debug.Log("触碰到边界 ");
+            isGround = true;
+            rigidbody.isKinematic = true;
+        }
+        //else if(TileMapManager.Instance.IsTouchBounds(cellPos + new Vector3Int(0, -1,0)))
+        //{
+        //    Debug.Log("触碰到边界 ");
+        //    isGround = true;
+        //    rigidbody.isKinematic = true;
+        //}
         else if (isGround)
         {
             Debug.Log("脚下没有东西 = " + cellPos);
             isGround = false;
             //rigidbody.useGravity = true;
             rigidbody.isKinematic = false;
-            cellPos = TileMapManager.Instance.GetCellPosByWorldPos(transform.position);
         }
         return isGround;
 

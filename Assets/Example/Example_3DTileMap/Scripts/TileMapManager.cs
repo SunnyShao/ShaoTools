@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using UnityEngine.WSA;
 
 public class TileMapManager : SingletonBehaviour<TileMapManager>
 {
@@ -10,8 +7,12 @@ public class TileMapManager : SingletonBehaviour<TileMapManager>
 
     public TileBase curTileBase;
 
-    public int height = 30;
-    public int width = 40;
+    [SerializeField]
+    private int height_Bounds = 43; //高度边界值
+    [SerializeField]
+    private int height = 40;
+    [SerializeField]
+    private int width = 30;
 
     // Start is called before the first frame update
     void Start()
@@ -41,13 +42,24 @@ public class TileMapManager : SingletonBehaviour<TileMapManager>
         base.OnInitialized();
         curTileMap.ClearAllTiles();
 
-        for (int i = 0; i < height; i++)
+        for (int i = 0; i < width; i++)
         {
-            for (int j = 0; j < width; j++)
+            for (int j = 0; j < height; j++)
             {
                 curTileMap.SetTile(new Vector3Int(i, j, 0), curTileBase);
             }
         }
+    }
+
+    //是否触碰边界
+    public bool IsTouchBounds(Vector3Int targetCell)
+    {
+        if (0 <= targetCell.x && targetCell.x < width && 0 <= targetCell.y && targetCell.y < height_Bounds)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     // 获得当前世界坐标对应的格子校正后的世界坐标
