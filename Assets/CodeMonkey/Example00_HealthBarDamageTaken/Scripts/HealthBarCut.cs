@@ -1,15 +1,15 @@
-using System;
+ï»¿using System;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace CodeMonkey
 {
     /// <summary>
-    /// Ò»¶ÎÒ»¶ÎµôÂäµÄÑªÌõ
+    /// ä¸€æ®µä¸€æ®µæ‰è½çš„è¡€æ¡
     /// </summary>
     public class HealthBarCut : MonoBehaviour
     {
-        private const float BAR_WIDTH = 500f;  //ÑªÌõ×Ü¿í¶ÈÉÏÏŞ
+        private const float BAR_WIDTH = 500f;  //è¡€æ¡æ€»å®½åº¦ä¸Šé™
 
         private Image barImage;
         private Transform damagedBarTemplate;
